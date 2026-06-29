@@ -1,12 +1,28 @@
 <!DOCTYPE html>
 <html lang="ru">
+// Конфигурация Firebase (ваша)
+const firebaseConfig = {
+  apiKey: "AIzaSyD6IVkR65FAR96KbHug9MNbd0sQC3zf1kU",
+  authDomain: "gamezone-8381d.firebaseapp.com",
+  projectId: "gamezone-8381d",
+  storageBucket: "gamezone-8381d.firebasestorage.app",
+  messagingSenderId: "1024319425217",
+  appId: "1:1024319425217:web:625dde06abd20ec04a6240",
+  measurementId: "G-ZB16CVTDNY"
+};
+
+// Инициализация
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>21GameZone</title>
 
-<!-- Firebase SDK (compat версия для простоты) -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
@@ -187,7 +203,6 @@ main { max-width: 1100px; margin: 0 auto; padding: 20px 14px 60px; }
   background: rgba(0,0,0,0.85);
   border: 1px solid #2a2a40;
   display: none;
-  transition: opacity 0.3s;
 }
 .sync-indicator.show { display: block; }
 .sync-indicator.ok { color: #22c55e; border-color: #22c55e; }
@@ -594,7 +609,7 @@ main { max-width: 1100px; margin: 0 auto; padding: 20px 14px 60px; }
 
 <script>
 // ============ FIREBASE CONFIG ============
-var firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyD6IVkR65FAR96KbHug9MNbd0sQC3zf1kU",
   authDomain: "gamezone-8381d.firebaseapp.com",
   projectId: "gamezone-8381d",
@@ -605,7 +620,7 @@ var firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-var db = firebase.firestore();
+const db = firebase.firestore();
 
 // ============ DATA ============
 var PLATFORMS = [
@@ -649,9 +664,7 @@ var S = {
 var users = {};
 var bookings = [];
 var GAMES = [];
-var unsubscribe = null;
-var isSaving = false;
-var saveTimeout = null;
+var unsubscribe = null; // для отписки от Firestore listener
 
 // ============ LOCAL STORAGE ============
 function lsGet(key, def) {
@@ -667,71 +680,46 @@ function showSync(msg, type) {
   var el = document.getElementById('syncIndicator');
   el.textContent = msg;
   el.className = 'sync-indicator show ' + type;
-  clearTimeout(el._t);
-  el._t = setTimeout(function() { el.className = 'sync-indicator'; }, 2500);
+  setTimeout(function() { el.className = 'sync-indicator'; }, 2500);
 }
 
 // ============ FIREBASE FUNCTIONS ============
 function saveToFirebase() {
-  if (isSaving) {
-    if (saveTimeout) clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(saveToFirebase, 500);
-    return;
-  }
-  isSaving = true;
-  
   db.collection('data').doc('main').set({
     users: users,
     bookings: bookings,
     games: GAMES,
-    timestamp: Date.now()
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
   }).then(function() {
-    isSaving = false;
     showSync('✓ Сохранено', 'ok');
   }).catch(function(err) {
-    isSaving = false;
     console.error('Save error:', err);
-    showSync('✗ Ошибка сохранения', 'err');
+    showSync('✗ Ошибка', 'err');
   });
 }
 
 function startRealtimeListener() {
   showSync('⏳ Подключение...', 'loading');
-  
+
   unsubscribe = db.collection('data').doc('main').onSnapshot(function(doc) {
     if (doc.exists) {
       var data = doc.data();
-      var newData = {
-        users: data.users || {},
-        bookings: data.bookings || [],
-        games: data.games || []
-      };
-      
-      // Проверяем, действительно ли данные изменились
-      var changed = false;
-      if (JSON.stringify(newData.users) !== JSON.stringify(users)) changed = true;
-      if (JSON.stringify(newData.bookings) !== JSON.stringify(bookings)) changed = true;
-      if (JSON.stringify(newData.games) !== JSON.stringify(GAMES)) changed = true;
-      
-      if (changed) {
-        users = newData.users;
-        bookings = newData.bookings;
-        GAMES = newData.games;
-        
-        lsSet('gz_data', { users: users, bookings: bookings, games: GAMES });
-        
-        // Проверяем сессию
-        if (S.userLogin && !users[S.userLogin]) {
-          S.user = null; S.role = null; S.userLogin = null;
-          S.screen = 'auth';
-          lsSet('gz_session', null);
-        }
-        
-        showSync('✓ Обновлено', 'ok');
-        render();
-      } else {
-        showSync('✓ Онлайн', 'ok');
+      users = data.users || {};
+      bookings = data.bookings || [];
+      GAMES = data.games || [];
+
+      // Сохраняем локально
+      lsSet('gz_data', { users: users, bookings: bookings, games: GAMES });
+
+      // Проверяем сессию
+      if (S.userLogin && !users[S.userLogin]) {
+        S.user = null; S.role = null; S.userLogin = null;
+        S.screen = 'auth';
+        lsSet('gz_session', null);
       }
+
+      showSync('✓ Обновлено', 'ok');
+      render();
     } else {
       // Документ не существует - создаем с дефолтными данными
       users = { 'admin': { name: 'Администратор', pass: 'admin123', role: 'admin' } };
@@ -751,17 +739,17 @@ function startRealtimeListener() {
 function loadData() {
   // 1. Мгновенно загружаем из localStorage
   var localData = lsGet('gz_data', null);
-  
+
   if (localData && localData.users) {
     users = localData.users;
     bookings = localData.bookings || [];
-    GAMES = localData.games || DEFAULT_GAMES.slice();
+    GAMES = localData.games || DEFAULT_GAMES;
   } else {
     users = { 'admin': { name: 'Администратор', pass: 'admin123', role: 'admin' } };
     bookings = [];
     GAMES = DEFAULT_GAMES.slice();
   }
-  
+
   // 2. Восстанавливаем сессию
   var session = lsGet('gz_session', null);
   if (session && session.login && users[session.login]) {
@@ -770,10 +758,10 @@ function loadData() {
     S.role = users[session.login].role;
     S.screen = S.role === 'admin' ? 'admin' : 'booking';
   }
-  
+
   // 3. Мгновенный рендер
   render();
-  
+
   // 4. Подписываемся на обновления в реальном времени
   startRealtimeListener();
 }
@@ -1033,9 +1021,10 @@ function rAdmin() {
   h += '</div>';
   if (list.length > 0) h += '<p style="color:#6b7280;font-size:11px;margin-top:8px">Показано: '+list.length+' из '+bookings.length+'</p>';
 
+  // Секция управления играми
   h += '<div class="admin-games-section">';
   h += '<h2 style="font-family:\'Orbitron\';color:#f59e0b;font-size:15px;margin-bottom:16px">📚 Управление играми</h2>';
-  
+
   h += '<div class="game-form">';
   h += '<h3>Добавить новую игру</h3>';
   h += '<div class="form-row">';
@@ -1050,7 +1039,7 @@ function rAdmin() {
   }
   h += '</select></div>';
   h += '</div>';
-  
+
   h += '<div class="field"><label>Изображение игры</label>';
   h += '<div class="img-preview" id="imgPreview">';
   if (S.newGame.img) {
@@ -1064,21 +1053,20 @@ function rAdmin() {
   h += '<label for="gameImage" class="file-input-label">📁 Выбрать изображение</label>';
   h += '</div>';
   h += '</div>';
-  
+
   h += '<button class="btn-add" onclick="addGame()" style="margin-top:12px">➕ Добавить игру</button>';
   h += '</div>';
 
   h += '<h3 style="font-family:\'Orbitron\';color:#c084fc;font-size:13px;margin:20px 0 12px">Существующие игры ('+GAMES.length+')</h3>';
-  
+
   var gamesByPlat = {'PS5':[], 'XBOX':[], 'VR':[]};
   for (var i=0; i<GAMES.length; i++) {
-    if (!gamesByPlat[GAMES[i].p]) gamesByPlat[GAMES[i].p] = [];
     gamesByPlat[GAMES[i].p].push(GAMES[i]);
   }
-  
+
   for (var pi=0; pi<PLATFORMS.length; pi++) {
     var platId = PLATFORMS[pi].id;
-    var platGames = gamesByPlat[platId] || [];
+    var platGames = gamesByPlat[platId];
     if (platGames.length > 0) {
       h += '<div style="margin-bottom:16px">';
       h += '<div style="color:#6b7280;font-size:12px;margin-bottom:8px">'+PLATFORMS[pi].label+' ('+platGames.length+')</div>';
@@ -1100,7 +1088,7 @@ function rAdmin() {
       h += '</div>';
     }
   }
-  
+
   h += '</div>';
   h += '</div>';
   return h;
@@ -1120,12 +1108,12 @@ function afClear()  { S.af={plat:'',date:'',q:''}; render(); }
 function handleImageUpload(event) {
   var file = event.target.files[0];
   if (!file) return;
-  
+
   if (file.size > 200 * 1024) {
     alert('Изображение слишком большое! Максимум 200KB. Сейчас: ' + Math.round(file.size / 1024) + 'KB');
     return;
   }
-  
+
   var reader = new FileReader();
   reader.onload = function(e) {
     S.newGame.img = e.target.result;
@@ -1138,12 +1126,12 @@ function addGame() {
   var title = document.getElementById('gameTitle').value.trim();
   var genre = document.getElementById('gameGenre').value.trim();
   var plat = document.getElementById('gamePlatform').value;
-  
+
   if (!title || !genre) {
     alert('Заполните название и жанр игры');
     return;
   }
-  
+
   var newGame = {
     id: genId(),
     t: title,
@@ -1151,13 +1139,12 @@ function addGame() {
     p: plat,
     img: S.newGame.img || ''
   };
-  
+
   GAMES.push(newGame);
   saveToFirebase();
-  
+
   S.newGame = {t:'', g:'', p:'PS5', img:''};
   render();
-  alert('Игра добавлена!');
 }
 
 function delGame(id) {
@@ -1165,13 +1152,13 @@ function delGame(id) {
   for (var i=0; i<bookings.length; i++) {
     if (bookings[i].game === id) { hasBookings = true; break; }
   }
-  
+
   if (hasBookings) {
     if (!confirm('На эту игру есть бронирования! Удалить всё равно?')) return;
   } else {
     if (!confirm('Удалить эту игру?')) return;
   }
-  
+
   for (var i=0; i<GAMES.length; i++) {
     if (GAMES[i].id === id) { GAMES.splice(i, 1); break; }
   }

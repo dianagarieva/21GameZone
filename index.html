@@ -151,9 +151,7 @@ height: 100%;
 object-fit: cover;
 transition: transform 0.3s;
 }
-.game-card:hover .game-image img {
-transform: scale(1.05);
-}
+.game-card:hover .game-image img { transform: scale(1.05); }
 .console-badge {
 position: absolute;
 top: 10px;
@@ -318,20 +316,9 @@ cursor: pointer;
 transition: all 0.3s;
 font-weight: 600;
 }
-.time-slot:hover {
-border-color: var(--primary);
-background: rgba(168, 85, 247, 0.1);
-}
-.time-slot.selected {
-background: var(--gradient-1);
-border-color: var(--primary);
-color: white;
-}
-.time-slot.disabled {
-opacity: 0.3;
-cursor: not-allowed;
-text-decoration: line-through;
-}
+.time-slot:hover { border-color: var(--primary); background: rgba(168, 85, 247, 0.1); }
+.time-slot.selected { background: var(--gradient-1); border-color: var(--primary); color: white; }
+.time-slot.disabled { opacity: 0.3; cursor: not-allowed; text-decoration: line-through; }
 .duration-fixed {
 padding: 14px;
 background: var(--bg-darker);
@@ -355,6 +342,7 @@ cursor: pointer;
 transition: all 0.3s;
 }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(168, 85, 247, 0.5); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-secondary {
 padding: 10px 20px;
 background: transparent;
@@ -565,6 +553,7 @@ margin-left: 10px;
 }
 .db-status.ok { background: rgba(16, 185, 129, 0.2); color: var(--success); }
 .db-status.error { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+.db-status.loading { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
 .admin-game-actions {
 display: flex;
 gap: 8px;
@@ -609,6 +598,32 @@ margin-bottom: 20px;
 }
 .backup-info h3 { margin-bottom: 10px; color: var(--accent); }
 .backup-info p { color: var(--text-dim); font-size: 14px; margin-bottom: 5px; }
+/* Loader */
+.loader-overlay {
+position: fixed;
+inset: 0;
+background: rgba(5, 5, 16, 0.95);
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+z-index: 9999;
+gap: 20px;
+}
+.loader-spinner {
+width: 60px;
+height: 60px;
+border: 4px solid var(--border);
+border-top-color: var(--primary);
+border-radius: 50%;
+animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-text {
+font-size: 18px;
+color: var(--text);
+font-weight: 600;
+}
 @media (max-width: 768px) {
 .header { padding: 15px 20px; }
 .hero h2 { font-size: 32px; }
@@ -622,6 +637,11 @@ margin-bottom: 20px;
 </style>
 </head>
 <body>
+<div class="loader-overlay" id="loader">
+<div class="loader-spinner"></div>
+<div class="loader-text">🔥 Подключение к Firebase...</div>
+</div>
+
 <header class="header">
 <div class="logo">
 <span class="logo-icon">🎮</span>
@@ -681,7 +701,7 @@ margin-bottom: 20px;
 <small style="color:var(--text-dim)">Всего игр: <strong id="gamesCount">0</strong></small>
 </div>
 <div>
-<button class="reset-btn" id="resetGamesBtn">🔄 Сбросить все игры</button>
+<button class="reset-btn" id="resetGamesBtn">🔄 Сбросить игры</button>
 <button class="btn-primary" id="addGameBtn" style="width:auto;padding:12px 24px;">+ Добавить игру</button>
 </div>
 </div>
@@ -712,21 +732,20 @@ margin-bottom: 20px;
 <div class="stats-grid" id="statsGrid"></div>
 </section>
 <section class="tab-content" id="tab-backup">
-<h2 style="margin-bottom:20px;">💾 Резервное копирование базы данных</h2>
+<h2 style="margin-bottom:20px;">💾 Резервное копирование</h2>
 <div class="backup-info">
-<h3>📦 Текущее состояние БД</h3>
+<h3>📦 Состояние Firebase БД</h3>
 <p>🎮 Игр в базе: <strong id="backupGamesCount">0</strong></p>
 <p>📋 Бронирований: <strong id="backupBookingsCount">0</strong></p>
-<p>💾 Размер хранилища: <strong id="backupSize">0</strong> КБ</p>
-<p>🟢 Статус: <span id="backupStatus" class="db-status ok">OK</span></p>
+<p>🔥 Статус: <span id="backupStatus" class="db-status loading">Подключение...</span></p>
 </div>
 <div class="backup-actions">
 <button class="btn-export" id="exportBtn">📤 Скачать бэкап (JSON)</button>
 <button class="btn-import" id="importBtn">📥 Загрузить из файла</button>
-<button class="btn-clear" id="clearAllBtn">🗑 Очистить всю БД</button>
+<button class="btn-clear" id="clearAllBtn">🗑 Очистить Firebase БД</button>
 </div>
 <input type="file" id="importFile" accept=".json" style="display:none;">
-<p class="hint">⚠️ Сохраняйте бэкап регулярно — данные хранятся только в вашем браузере и могут быть потеряны при очистке кэша.</p>
+<p class="hint">⚠️ Данные хранятся в Firebase Firestore и доступны со всех устройств.</p>
 </section>
 </div>
 </div>
@@ -757,7 +776,7 @@ margin-bottom: 20px;
 <label>Длительность</label>
 <div class="duration-fixed">⏱ 1 час</div>
 </div>
-<button type="submit" class="btn-primary">Забронировать 🎯</button>
+<button type="submit" class="btn-primary" id="submitBookingBtn">Забронировать 🎯</button>
 </form>
 </div>
 </div>
@@ -805,26 +824,49 @@ margin-bottom: 20px;
 <small class="hint">JPG/PNG до 2 МБ</small>
 <div id="imagePreview" class="image-preview"></div>
 </div>
-<button type="submit" class="btn-primary">Сохранить</button>
+<button type="submit" class="btn-primary" id="submitGameBtn">Сохранить</button>
 </form>
 </div>
 </div>
 <div class="toast-container" id="toastContainer"></div>
 <footer class="footer">
-<p>© 2026 21GameZone — Играй. Бронируй. Побеждай. 🏆 <span id="dbStatusFooter" class="db-status ok">БД: OK</span></p>
+<p>© 2026 21GameZone — Играй. Бронируй. Побеждай. 🏆 <span id="dbStatusFooter" class="db-status loading">Firebase: ...</span></p>
 </footer>
+
+<!-- Firebase SDK (compat версия) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
 <script>
+// ============ FIREBASE CONFIG ============
+const firebaseConfig = {
+  apiKey: "AIzaSyA831fias_I7c8Huokqjtj3dEO9sO9uOnc",
+  authDomain: "gamezone-abbab.firebaseapp.com",
+  databaseURL: "https://gamezone-abbab-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "gamezone-abbab",
+  storageBucket: "gamezone-abbab.firebasestorage.app",
+  messagingSenderId: "430536623051",
+  appId: "1:430536623051:web:d8f7a2d115d1add797ac4e"
+};
+
+// Инициализация Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Ссылки на коллекции
+const gamesCollection = db.collection('games');
+const bookingsCollection = db.collection('bookings');
+
+// ============ КОНСТАНТЫ ============
 const STORAGE = {
-GAMES: 'gz_games',
-BOOKINGS: 'gz_bookings',
-AUTH: 'gz_auth',
-USER_ID: 'gz_user_id',
-INITIALIZED: 'gz_initialized' // Флаг первичной инициализации
+  AUTH: 'gz_auth',
+  USER_ID: 'gz_user_id'
 };
 const ADMIN_CREDENTIALS = { login: 'admin', password: 'admin123' };
 const TIME_SLOTS = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'];
 const FIXED_DURATION = 1;
 
+// 60 ИГР ПО УМОЛЧАНИЮ
 const DEFAULT_GAMES = [
 // PS5 (20 игр)
 { id: 'ps5_1', title: 'God of War Ragnarök', console: 'PS5', genre: 'Экшен, Приключения', description: 'Эпическое продолжение саги о Кратосе и Атрее.', image: '' },
@@ -891,670 +933,751 @@ const DEFAULT_GAMES = [
 { id: 'vr_20', title: 'Pistol Whip', console: 'VR', genre: 'Ритм-шутер, VR', description: 'Стильный шутер под музыку.', image: '' }
 ];
 
+// ============ УТИЛИТЫ ============
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
-
-// ============ УЛУЧШЕННАЯ РАБОТА С БД ============
-function isLocalStorageAvailable() {
-try {
-const test = '__test__';
-localStorage.setItem(test, test);
-localStorage.removeItem(test);
-return true;
-} catch (e) {
-return false;
-}
-}
-
-function loadData(key, fallback) {
-try {
-const data = localStorage.getItem(key);
-if (data === null) return fallback;
-return JSON.parse(data);
-} catch (e) {
-console.error(`❌ Ошибка чтения ${key}:`, e);
-updateDbStatus(false);
-return fallback;
-}
-}
-
-function saveData(key, data) {
-try {
-const serialized = JSON.stringify(data);
-localStorage.setItem(key, serialized);
-updateDbStatus(true);
-return true;
-} catch (e) {
-console.error(`❌ Ошибка записи ${key}:`, e);
-if (e.name === 'QuotaExceededError' || e.code === 22) {
-toast('⚠️ Хранилище переполнено! Сделайте бэкап и очистите данные.', 'error');
-} else {
-toast('❌ Ошибка сохранения данных', 'error');
-}
-updateDbStatus(false);
-return false;
-}
-}
-
-function updateDbStatus(ok) {
-const footerStatus = $('#dbStatusFooter');
-if (footerStatus) {
-footerStatus.className = `db-status ${ok ? 'ok' : 'error'}`;
-footerStatus.textContent = ok ? 'БД: OK' : 'БД: ОШИБКА';
-}
-const backupStatus = $('#backupStatus');
-if (backupStatus) {
-backupStatus.className = `db-status ${ok ? 'ok' : 'error'}`;
-backupStatus.textContent = ok ? 'OK' : 'ОШИБКА';
-}
-}
-
-function getStorageSize() {
-let total = 0;
-try {
-for (let key in localStorage) {
-if (localStorage.hasOwnProperty(key)) {
-total += localStorage[key].length + key.length;
-}
-}
-} catch (e) {}
-return (total / 1024).toFixed(2);
-}
 
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 
 function toast(message, type = 'success') {
-const container = $('#toastContainer');
-const el = document.createElement('div');
-el.className = `toast ${type}`;
-el.textContent = message;
-container.appendChild(el);
-setTimeout(() => {
-el.style.opacity = '0';
-el.style.transform = 'translateX(100px)';
-el.style.transition = 'all 0.3s';
-setTimeout(() => el.remove(), 300);
-}, 3000);
+  const container = $('#toastContainer');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = message;
+  container.appendChild(el);
+  setTimeout(() => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(100px)';
+    el.style.transition = 'all 0.3s';
+    setTimeout(() => el.remove(), 300);
+  }, 3000);
 }
 
 function getUserId() {
-let id = localStorage.getItem(STORAGE.USER_ID);
-if (!id) {
-id = uid();
-saveData(STORAGE.USER_ID, id);
-}
-return id;
-}
-
-// Проверка доступности localStorage
-if (!isLocalStorageAvailable()) {
-alert('⚠️ localStorage недоступен! Данные не будут сохраняться. Проверьте настройки браузера.');
+  let id = localStorage.getItem(STORAGE.USER_ID);
+  if (!id) {
+    id = uid();
+    localStorage.setItem(STORAGE.USER_ID, id);
+  }
+  return id;
 }
 
-// ============ ИНИЦИАЛИЗАЦИЯ БД ============
-let games = loadData(STORAGE.GAMES, null);
-let bookings = loadData(STORAGE.BOOKINGS, null);
-const isInitialized = localStorage.getItem(STORAGE.INITIALIZED) === 'true';
-
-// Загружаем дефолтные игры ТОЛЬКО при первом запуске
-if (!isInitialized || games === null) {
-games = [...DEFAULT_GAMES];
-saveData(STORAGE.GAMES, games);
-localStorage.setItem(STORAGE.INITIALIZED, 'true');
-console.log('✅ Первый запуск — загружено 60 игр по умолчанию');
-}
-if (bookings === null) {
-bookings = [];
-saveData(STORAGE.BOOKINGS, bookings);
+function updateDbStatus(status, text) {
+  const footerStatus = $('#dbStatusFooter');
+  const backupStatus = $('#backupStatus');
+  if (footerStatus) {
+    footerStatus.className = `db-status ${status}`;
+    footerStatus.textContent = text;
+  }
+  if (backupStatus) {
+    backupStatus.className = `db-status ${status}`;
+    backupStatus.textContent = status === 'ok' ? 'Online' : status === 'error' ? 'Offline' : 'Подключение...';
+  }
 }
 
-console.log(`%c🎮 21GameZone загружен!`, 'color:#a855f7;font-size:16px;font-weight:bold;');
-console.log(`📦 Игр: ${games.length}, Броней: ${bookings.length}, Размер БД: ${getStorageSize()} КБ`);
+function hideLoader() {
+  const loader = $('#loader');
+  if (loader) {
+    loader.style.opacity = '0';
+    loader.style.transition = 'opacity 0.5s';
+    setTimeout(() => loader.remove(), 500);
+  }
+}
 
+// ============ СОСТОЯНИЕ ПРИЛОЖЕНИЯ ============
+let games = [];
+let bookings = [];
 let currentFilter = 'all';
 let currentBookingGameId = null;
 let currentImageBase64 = null;
 let selectedTimeSlot = null;
+let gamesUnsubscribe = null;
+let bookingsUnsubscribe = null;
 
-function saveGames() {
-const ok = saveData(STORAGE.GAMES, games);
-$('#gamesCount').textContent = games.length;
-updateBackupInfo();
-return ok;
+// ============ FIRESTORE: ПОДПИСКИ REAL-TIME ============
+function initFirestoreListeners() {
+  // Подписка на игры
+  gamesUnsubscribe = gamesCollection.onSnapshot((snapshot) => {
+    games = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    console.log(`📦 Игр загружено: ${games.length}`);
+    $('#gamesCount').textContent = games.length;
+    $('#backupGamesCount').textContent = games.length;
+    renderClientGames();
+    if ($('#adminPanel').style.display === 'block') {
+      renderAdminGames();
+      renderStats();
+    }
+    updateDbStatus('ok', 'Firebase: Online');
+    hideLoader();
+  }, (error) => {
+    console.error('❌ Ошибка подписки на игры:', error);
+    updateDbStatus('error', 'Firebase: Ошибка');
+    toast('Ошибка подключения к Firebase', 'error');
+    hideLoader();
+  });
+
+  // Подписка на бронирования
+  bookingsUnsubscribe = bookingsCollection.onSnapshot((snapshot) => {
+    bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    console.log(`📋 Броней загружено: ${bookings.length}`);
+    $('#backupBookingsCount').textContent = bookings.length;
+    renderClientGames(); // перерисовать слоты
+    if ($('#adminPanel').style.display === 'block') {
+      renderAdminBookings();
+      renderStats();
+    }
+    // Если открыто окно бронирования - обновить слоты
+    if ($('#bookingModal').classList.contains('active') && currentBookingGameId) {
+      const game = games.find(g => g.id === currentBookingGameId);
+      if (game) {
+        const date = $('#bookingDate').value;
+        if (date) renderTimeSlots(date, game.console);
+      }
+    }
+    // Если открыты "Мои брони" - обновить
+    if ($('#bookingsModal').classList.contains('active')) {
+      renderMyBookings();
+    }
+  }, (error) => {
+    console.error('❌ Ошибка подписки на брони:', error);
+  });
 }
 
-function saveBookings() {
-const ok = saveData(STORAGE.BOOKINGS, bookings);
-updateBackupInfo();
-return ok;
+// ============ FIRESTORE: ОПЕРАЦИИ ============
+async function initializeDefaultGames() {
+  try {
+    const snapshot = await gamesCollection.get();
+    if (snapshot.empty) {
+      console.log('📥 Первый запуск — загружаю 60 игр в Firebase...');
+      const batch = db.batch();
+      DEFAULT_GAMES.forEach(game => {
+        const ref = gamesCollection.doc(game.id);
+        batch.set(ref, game);
+      });
+      await batch.commit();
+      console.log('✅ 60 игр загружены в Firebase');
+    }
+  } catch (error) {
+    console.error('❌ Ошибка инициализации игр:', error);
+    toast('Ошибка загрузки игр', 'error');
+  }
 }
 
+async function saveGameToFirestore(game) {
+  try {
+    await gamesCollection.doc(game.id).set(game);
+    return true;
+  } catch (error) {
+    console.error('❌ Ошибка сохранения игры:', error);
+    toast('Ошибка сохранения в Firebase', 'error');
+    return false;
+  }
+}
+
+async function deleteGameFromFirestore(id) {
+  try {
+    await gamesCollection.doc(id).delete();
+    return true;
+  } catch (error) {
+    console.error('❌ Ошибка удаления игры:', error);
+    toast('Ошибка удаления', 'error');
+    return false;
+  }
+}
+
+async function addBookingToFirestore(booking) {
+  try {
+    await bookingsCollection.doc(booking.id).set(booking);
+    return true;
+  } catch (error) {
+    console.error('❌ Ошибка сохранения брони:', error);
+    toast('Ошибка сохранения брони', 'error');
+    return false;
+  }
+}
+
+async function updateBookingInFirestore(id, data) {
+  try {
+    await bookingsCollection.doc(id).update(data);
+    return true;
+  } catch (error) {
+    console.error('❌ Ошибка обновления брони:', error);
+    toast('Ошибка обновления', 'error');
+    return false;
+  }
+}
+
+async function resetGamesToDefault() {
+  try {
+    // Удаляем все игры
+    const snapshot = await gamesCollection.get();
+    const batch = db.batch();
+    snapshot.docs.forEach(doc => batch.delete(doc.ref));
+    await batch.commit();
+    
+    // Загружаем дефолтные
+    const batch2 = db.batch();
+    DEFAULT_GAMES.forEach(game => {
+      const ref = gamesCollection.doc(game.id);
+      batch2.set(ref, game);
+    });
+    await batch2.commit();
+    
+    toast('✅ Игры сброшены к стандартным', 'success');
+    return true;
+  } catch (error) {
+    console.error('❌ Ошибка сброса:', error);
+    toast('Ошибка сброса', 'error');
+    return false;
+  }
+}
+
+async function clearAllFirestore() {
+  try {
+    const gamesSnap = await gamesCollection.get();
+    const bookingsSnap = await bookingsCollection.get();
+    const batch = db.batch();
+    gamesSnap.docs.forEach(doc => batch.delete(doc.ref));
+    bookingsSnap.docs.forEach(doc => batch.delete(doc.ref));
+    await batch.commit();
+    toast('🗑 Firebase БД очищена', 'warning');
+    return true;
+  } catch (error) {
+    console.error('❌ Ошибка очистки:', error);
+    toast('Ошибка очистки', 'error');
+    return false;
+  }
+}
+
+// ============ РЕНДЕРИНГ ============
 function renderGameCard(game, isAdmin = false) {
-const card = document.createElement('div');
-card.className = 'game-card';
-const imageHtml = game.image
-? `<img src="${game.image}" alt="${game.title}" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\\'font-size:80px;\\'>🎮</span>'">`
-: `<span style="font-size:80px;">🎮</span>`;
-card.innerHTML = `
-<div class="game-image">
-<span class="free-badge"> Бесплатно</span>
-<span class="console-badge ${game.console}">${game.console}</span>
-${imageHtml}
-</div>
-<div class="game-info">
-<div class="game-title">${game.title}</div>
-<div class="game-genre">${game.genre}</div>
-<div class="game-description">${game.description || ''}</div>
-<div class="game-footer">
-${isAdmin ? '' : `<button class="btn-book" data-id="${game.id}">Забронировать</button>`}
-</div>
-</div>
-${isAdmin ? `
-<div class="admin-game-actions">
-<button class="btn-small btn-edit" data-edit="${game.id}">✏️ Изменить</button>
-<button class="btn-small btn-delete" data-delete="${game.id}">🗑 Удалить</button>
-</div>` : ''}
-`;
-return card;
+  const card = document.createElement('div');
+  card.className = 'game-card';
+  const imageHtml = game.image
+    ? `<img src="${game.image}" alt="${game.title}" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\\'font-size:80px;\\'>🎮</span>'">`
+    : `<span style="font-size:80px;">🎮</span>`;
+  card.innerHTML = `
+    <div class="game-image">
+      <span class="free-badge">Бесплатно</span>
+      <span class="console-badge ${game.console}">${game.console}</span>
+      ${imageHtml}
+    </div>
+    <div class="game-info">
+      <div class="game-title">${game.title}</div>
+      <div class="game-genre">${game.genre}</div>
+      <div class="game-description">${game.description || ''}</div>
+      <div class="game-footer">
+        ${isAdmin ? '' : `<button class="btn-book" data-id="${game.id}">Забронировать</button>`}
+      </div>
+    </div>
+    ${isAdmin ? `
+    <div class="admin-game-actions">
+      <button class="btn-small btn-edit" data-edit="${game.id}">✏️ Изменить</button>
+      <button class="btn-small btn-delete" data-delete="${game.id}">🗑 Удалить</button>
+    </div>` : ''}
+  `;
+  return card;
 }
 
 function renderClientGames() {
-const grid = $('#gamesGrid');
-grid.innerHTML = '';
-const filtered = currentFilter === 'all' ? games : games.filter(g => g.console === currentFilter);
-if (filtered.length === 0) {
-grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:40px;">Нет игр в этой категории 😔</p>';
-return;
-}
-filtered.forEach(game => {
-const card = renderGameCard(game, false);
-grid.appendChild(card);
-});
-grid.querySelectorAll('.btn-book').forEach(btn => {
-btn.addEventListener('click', (e) => {
-e.stopPropagation();
-openBookingModal(btn.dataset.id);
-});
-});
+  const grid = $('#gamesGrid');
+  grid.innerHTML = '';
+  const filtered = currentFilter === 'all' ? games : games.filter(g => g.console === currentFilter);
+  if (filtered.length === 0) {
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:40px;">Нет игр в этой категории 😔</p>';
+    return;
+  }
+  filtered.forEach(game => {
+    const card = renderGameCard(game, false);
+    grid.appendChild(card);
+  });
+  grid.querySelectorAll('.btn-book').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openBookingModal(btn.dataset.id);
+    });
+  });
 }
 
 function renderAdminGames() {
-const grid = $('#adminGamesGrid');
-grid.innerHTML = '';
-$('#gamesCount').textContent = games.length;
-if (games.length === 0) {
-grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:40px;">Нет игр. Добавьте первую!</p>';
-return;
-}
-games.forEach(game => {
-const card = renderGameCard(game, true);
-grid.appendChild(card);
-});
-grid.querySelectorAll('[data-edit]').forEach(btn => {
-btn.addEventListener('click', () => openGameModal(btn.dataset.edit));
-});
-grid.querySelectorAll('[data-delete]').forEach(btn => {
-btn.addEventListener('click', () => deleteGame(btn.dataset.delete));
-});
+  const grid = $('#adminGamesGrid');
+  grid.innerHTML = '';
+  $('#gamesCount').textContent = games.length;
+  if (games.length === 0) {
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:40px;">Нет игр</p>';
+    return;
+  }
+  games.forEach(game => {
+    const card = renderGameCard(game, true);
+    grid.appendChild(card);
+  });
+  grid.querySelectorAll('[data-edit]').forEach(btn => {
+    btn.addEventListener('click', () => openGameModal(btn.dataset.edit));
+  });
+  grid.querySelectorAll('[data-delete]').forEach(btn => {
+    btn.addEventListener('click', () => deleteGame(btn.dataset.delete));
+  });
 }
 
 function openBookingModal(gameId) {
-const game = games.find(g => g.id === gameId);
-if (!game) return;
-currentBookingGameId = gameId;
-selectedTimeSlot = null;
-$('#bookingGameTitle').textContent = `Бронирование: ${game.title}`;
-const preview = $('#bookingPreview');
-const imgHtml = game.image
-? `<img src="${game.image}" alt="${game.title}">`
-: `<div style="font-size:50px;">🎮</div>`;
-preview.innerHTML = `${imgHtml}<div><strong>${game.title}</strong><br><small>${game.console} • <span style="color:var(--success);font-weight:700;">БЕСПЛАТНО</span></small></div>`;
-const today = new Date().toISOString().split('T')[0];
-$('#bookingDate').min = today;
-$('#bookingDate').value = today;
-$('#selectedTime').value = '';
-renderTimeSlots(today, game.console);
-$('#bookingModal').classList.add('active');
+  const game = games.find(g => g.id === gameId);
+  if (!game) return;
+  currentBookingGameId = gameId;
+  selectedTimeSlot = null;
+  $('#bookingGameTitle').textContent = `Бронирование: ${game.title}`;
+  const preview = $('#bookingPreview');
+  const imgHtml = game.image
+    ? `<img src="${game.image}" alt="${game.title}">`
+    : `<div style="font-size:50px;">🎮</div>`;
+  preview.innerHTML = `${imgHtml}<div><strong>${game.title}</strong><br><small>${game.console} • <span style="color:var(--success);font-weight:700;">БЕСПЛАТНО</span></small></div>`;
+  const today = new Date().toISOString().split('T')[0];
+  $('#bookingDate').min = today;
+  $('#bookingDate').value = today;
+  $('#selectedTime').value = '';
+  renderTimeSlots(today, game.console);
+  $('#bookingModal').classList.add('active');
 }
 
 function renderTimeSlots(date, consoleType) {
-const slotsContainer = $('#timeSlots');
-slotsContainer.innerHTML = '';
-TIME_SLOTS.forEach(time => {
-const slot = document.createElement('div');
-slot.className = 'time-slot';
-slot.textContent = time;
-slot.dataset.time = time;
-const isBooked = bookings.some(b =>
-b.date === date &&
-b.time === time &&
-b.console === consoleType &&
-b.status === 'active'
-);
-if (isBooked) {
-slot.classList.add('disabled');
-} else {
-slot.addEventListener('click', () => selectTimeSlot(slot, time));
-}
-slotsContainer.appendChild(slot);
-});
+  const slotsContainer = $('#timeSlots');
+  slotsContainer.innerHTML = '';
+  TIME_SLOTS.forEach(time => {
+    const slot = document.createElement('div');
+    slot.className = 'time-slot';
+    slot.textContent = time;
+    slot.dataset.time = time;
+    // Проверяем занятость ТОЛЬКО для этой консоли
+    const isBooked = bookings.some(b =>
+      b.date === date &&
+      b.time === time &&
+      b.console === consoleType &&
+      b.status === 'active'
+    );
+    if (isBooked) {
+      slot.classList.add('disabled');
+    } else {
+      slot.addEventListener('click', () => selectTimeSlot(slot, time));
+    }
+    slotsContainer.appendChild(slot);
+  });
 }
 
 function selectTimeSlot(element, time) {
-$$('.time-slot').forEach(s => s.classList.remove('selected'));
-element.classList.add('selected');
-selectedTimeSlot = time;
-$('#selectedTime').value = time;
+  $$('.time-slot').forEach(s => s.classList.remove('selected'));
+  element.classList.add('selected');
+  selectedTimeSlot = time;
+  $('#selectedTime').value = time;
 }
 
 $('#bookingDate').addEventListener('change', (e) => {
-if (e.target.value) {
-const game = games.find(g => g.id === currentBookingGameId);
-if (game) {
-renderTimeSlots(e.target.value, game.console);
-selectedTimeSlot = null;
-$('#selectedTime').value = '';
-}
-}
+  if (e.target.value) {
+    const game = games.find(g => g.id === currentBookingGameId);
+    if (game) {
+      renderTimeSlots(e.target.value, game.console);
+      selectedTimeSlot = null;
+      $('#selectedTime').value = '';
+    }
+  }
 });
 
-$('#bookingForm').addEventListener('submit', (e) => {
-e.preventDefault();
-if (!selectedTimeSlot) {
-toast('Пожалуйста, выберите время', 'error');
-return;
-}
-const game = games.find(g => g.id === currentBookingGameId);
-if (!game) return;
-const booking = {
-id: uid(),
-gameId: game.id,
-gameTitle: game.title,
-console: game.console,
-userName: $('#userName').value.trim(),
-userPhone: $('#userPhone').value.trim(),
-date: $('#bookingDate').value,
-time: selectedTimeSlot,
-duration: FIXED_DURATION,
-userId: getUserId(),
-status: 'active',
-createdAt: new Date().toISOString()
-};
-bookings.push(booking);
-if (saveBookings()) {
-$('#bookingModal').classList.remove('active');
-$('#bookingForm').reset();
-toast(`Бронь создана! ${game.title} — ${booking.date} в ${booking.time}`, 'success');
-} else {
-bookings.pop();
-}
+$('#bookingForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!selectedTimeSlot) {
+    toast('Пожалуйста, выберите время', 'error');
+    return;
+  }
+  const game = games.find(g => g.id === currentBookingGameId);
+  if (!game) return;
+  
+  const btn = $('#submitBookingBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Сохранение...';
+  
+  const booking = {
+    id: uid(),
+    gameId: game.id,
+    gameTitle: game.title,
+    console: game.console,
+    userName: $('#userName').value.trim(),
+    userPhone: $('#userPhone').value.trim(),
+    date: $('#bookingDate').value,
+    time: selectedTimeSlot,
+    duration: FIXED_DURATION,
+    userId: getUserId(),
+    status: 'active',
+    createdAt: new Date().toISOString()
+  };
+  
+  const ok = await addBookingToFirestore(booking);
+  btn.disabled = false;
+  btn.textContent = 'Забронировать 🎯';
+  
+  if (ok) {
+    $('#bookingModal').classList.remove('active');
+    $('#bookingForm').reset();
+    toast(`✅ Бронь создана! ${game.title} — ${booking.date} в ${booking.time}`, 'success');
+  }
 });
 
 function renderMyBookings() {
-const list = $('#myBookingsList');
-const userId = getUserId();
-const my = bookings.filter(b => b.userId === userId).sort((a, b) =>
-new Date(b.createdAt) - new Date(a.createdAt)
-);
-if (my.length === 0) {
-list.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:30px;">У вас пока нет бронирований</p>';
-return;
-}
-list.innerHTML = '';
-my.forEach(b => {
-const item = document.createElement('div');
-item.className = `booking-item ${b.status === 'cancelled' ? 'cancelled' : ''}`;
-item.innerHTML = `
-<div class="booking-info">
-<h4>${b.gameTitle} <span class="console-badge ${b.console}" style="font-size:10px;padding:2px 8px;position:static;display:inline-block;vertical-align:middle;">${b.console}</span></h4>
-<p>📅 ${formatDate(b.date)} в ${b.time} • ${b.duration} ч.</p>
-<p>Статус: <span class="status-badge ${b.status === 'active' ? 'status-active' : 'status-cancelled'}">${b.status === 'active' ? 'Активна' : 'Отменена'}</span></p>
-</div>
-${b.status === 'active' ? `<button class="btn-small btn-cancel" data-cancel="${b.id}">❌ Отменить</button>` : ''}
-`;
-list.appendChild(item);
-});
-list.querySelectorAll('[data-cancel]').forEach(btn => {
-btn.addEventListener('click', () => cancelBooking(btn.dataset.cancel, true));
-});
+  const list = $('#myBookingsList');
+  const userId = getUserId();
+  const my = bookings.filter(b => b.userId === userId).sort((a, b) =>
+    new Date(b.createdAt) - new Date(a.createdAt)
+  );
+  if (my.length === 0) {
+    list.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:30px;">У вас пока нет бронирований</p>';
+    return;
+  }
+  list.innerHTML = '';
+  my.forEach(b => {
+    const item = document.createElement('div');
+    item.className = `booking-item ${b.status === 'cancelled' ? 'cancelled' : ''}`;
+    item.innerHTML = `
+      <div class="booking-info">
+        <h4>${b.gameTitle} <span class="console-badge ${b.console}" style="font-size:10px;padding:2px 8px;position:static;display:inline-block;vertical-align:middle;">${b.console}</span></h4>
+        <p>📅 ${formatDate(b.date)} в ${b.time} • ${b.duration} ч.</p>
+        <p>Статус: <span class="status-badge ${b.status === 'active' ? 'status-active' : 'status-cancelled'}">${b.status === 'active' ? 'Активна' : 'Отменена'}</span></p>
+      </div>
+      ${b.status === 'active' ? `<button class="btn-small btn-cancel" data-cancel="${b.id}">❌ Отменить</button>` : ''}
+    `;
+    list.appendChild(item);
+  });
+  list.querySelectorAll('[data-cancel]').forEach(btn => {
+    btn.addEventListener('click', () => cancelBooking(btn.dataset.cancel, true));
+  });
 }
 
-function cancelBooking(id, isClient = false) {
-if (!confirm('Отменить бронирование?')) return;
-const b = bookings.find(x => x.id === id);
-if (!b) return;
-b.status = 'cancelled';
-saveBookings();
-toast('Бронирование отменено', 'warning');
-renderMyBookings();
-if (!isClient) renderAdminBookings();
+async function cancelBooking(id, isClient = false) {
+  if (!confirm('Отменить бронирование?')) return;
+  const b = bookings.find(x => x.id === id);
+  if (!b) return;
+  const ok = await updateBookingInFirestore(id, { status: 'cancelled' });
+  if (ok) {
+    toast('Бронирование отменено', 'warning');
+    renderMyBookings();
+    if (!isClient) renderAdminBookings();
+  }
 }
 
 function formatDate(dateStr) {
-const d = new Date(dateStr);
-return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' });
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' });
 }
 
 function renderAdminBookings() {
-const tbody = $('#adminBookingsBody');
-const sorted = [...bookings].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-if (sorted.length === 0) {
-tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-dim);padding:30px;">Бронирований пока нет</td></tr>';
-return;
-}
-tbody.innerHTML = sorted.map(b => `
-<tr class="${b.status === 'cancelled' ? 'cancelled' : ''}">
-<td><strong>${b.gameTitle}</strong></td>
-<td><span class="console-badge ${b.console}" style="position:static;">${b.console}</span></td>
-<td>${b.userName}</td>
-<td>${b.userPhone}</td>
-<td>${formatDate(b.date)}</td>
-<td>${b.time} (${b.duration} ч.)</td>
-<td><span class="status-badge ${b.status === 'active' ? 'status-active' : 'status-cancelled'}">${b.status === 'active' ? 'Активна' : 'Отменена'}</span></td>
-<td>
-${b.status === 'active'
-? `<button class="btn-small btn-cancel" data-admin-cancel="${b.id}">❌ Отменить</button>`
-: '—'}
-</td>
-</tr>
-`).join('');
-tbody.querySelectorAll('[data-admin-cancel]').forEach(btn => {
-btn.addEventListener('click', () => cancelBooking(btn.dataset.adminCancel, false));
-});
+  const tbody = $('#adminBookingsBody');
+  const sorted = [...bookings].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  if (sorted.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-dim);padding:30px;">Бронирований пока нет</td></tr>';
+    return;
+  }
+  tbody.innerHTML = sorted.map(b => `
+    <tr class="${b.status === 'cancelled' ? 'cancelled' : ''}">
+      <td><strong>${b.gameTitle}</strong></td>
+      <td><span class="console-badge ${b.console}" style="position:static;">${b.console}</span></td>
+      <td>${b.userName}</td>
+      <td>${b.userPhone}</td>
+      <td>${formatDate(b.date)}</td>
+      <td>${b.time} (${b.duration} ч.)</td>
+      <td><span class="status-badge ${b.status === 'active' ? 'status-active' : 'status-cancelled'}">${b.status === 'active' ? 'Активна' : 'Отменена'}</span></td>
+      <td>
+        ${b.status === 'active'
+          ? `<button class="btn-small btn-cancel" data-admin-cancel="${b.id}">❌ Отменить</button>`
+          : '—'}
+      </td>
+    </tr>
+  `).join('');
+  tbody.querySelectorAll('[data-admin-cancel]').forEach(btn => {
+    btn.addEventListener('click', () => cancelBooking(btn.dataset.adminCancel, false));
+  });
 }
 
 function renderStats() {
-const total = bookings.length;
-const active = bookings.filter(b => b.status === 'active').length;
-const cancelled = bookings.filter(b => b.status === 'cancelled').length;
-const byConsole = { PS5: 0, Xbox: 0, VR: 0 };
-bookings.filter(b => b.status === 'active').forEach(b => byConsole[b.console]++);
-$('#statsGrid').innerHTML = `
-<div class="stat-card"><div class="stat-icon">🎮</div><div class="stat-value">${games.length}</div><div class="stat-label">Всего игр</div></div>
-<div class="stat-card"><div class="stat-icon">📋</div><div class="stat-value">${total}</div><div class="stat-label">Всего броней</div></div>
-<div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value">${active}</div><div class="stat-label">Активных</div></div>
-<div class="stat-card"><div class="stat-icon">❌</div><div class="stat-value">${cancelled}</div><div class="stat-label">Отменённых</div></div>
-<div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-value">${byConsole.PS5}</div><div class="stat-label">PS5 броней</div></div>
-<div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-value">${byConsole.Xbox}</div><div class="stat-label">Xbox броней</div></div>
-<div class="stat-card"><div class="stat-icon">🥽</div><div class="stat-value">${byConsole.VR}</div><div class="stat-label">VR броней</div></div>
-`;
+  const total = bookings.length;
+  const active = bookings.filter(b => b.status === 'active').length;
+  const cancelled = bookings.filter(b => b.status === 'cancelled').length;
+  const byConsole = { PS5: 0, Xbox: 0, VR: 0 };
+  bookings.filter(b => b.status === 'active').forEach(b => byConsole[b.console]++);
+  $('#statsGrid').innerHTML = `
+    <div class="stat-card"><div class="stat-icon">🎮</div><div class="stat-value">${games.length}</div><div class="stat-label">Всего игр</div></div>
+    <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-value">${total}</div><div class="stat-label">Всего броней</div></div>
+    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value">${active}</div><div class="stat-label">Активных</div></div>
+    <div class="stat-card"><div class="stat-icon">❌</div><div class="stat-value">${cancelled}</div><div class="stat-label">Отменённых</div></div>
+    <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-value">${byConsole.PS5}</div><div class="stat-label">PS5 броней</div></div>
+    <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-value">${byConsole.Xbox}</div><div class="stat-label">Xbox броней</div></div>
+    <div class="stat-card"><div class="stat-icon">🥽</div><div class="stat-value">${byConsole.VR}</div><div class="stat-label">VR броней</div></div>
+  `;
 }
 
 function openGameModal(gameId = null) {
-const form = $('#gameForm');
-form.reset();
-$('#imagePreview').innerHTML = '';
-currentImageBase64 = null;
-if (gameId) {
-const game = games.find(g => g.id === gameId);
-if (!game) return;
-$('#gameModalTitle').textContent = 'Редактировать игру';
-$('#gameId').value = game.id;
-$('#gameTitle').value = game.title;
-$('#gameConsole').value = game.console;
-$('#gameGenre').value = game.genre;
-$('#gameDescription').value = game.description || '';
-if (game.image && !game.image.startsWith('data:')) {
-$('#gameImageUrl').value = game.image;
-}
-if (game.image && game.image.startsWith('data:')) {
-currentImageBase64 = game.image;
-$('#imagePreview').innerHTML = `<img src="${game.image}" alt="preview">`;
-}
-} else {
-$('#gameModalTitle').textContent = 'Добавить игру';
-$('#gameId').value = '';
-}
-$('#gameModal').classList.add('active');
+  const form = $('#gameForm');
+  form.reset();
+  $('#imagePreview').innerHTML = '';
+  currentImageBase64 = null;
+  if (gameId) {
+    const game = games.find(g => g.id === gameId);
+    if (!game) return;
+    $('#gameModalTitle').textContent = 'Редактировать игру';
+    $('#gameId').value = game.id;
+    $('#gameTitle').value = game.title;
+    $('#gameConsole').value = game.console;
+    $('#gameGenre').value = game.genre;
+    $('#gameDescription').value = game.description || '';
+    if (game.image && !game.image.startsWith('data:')) {
+      $('#gameImageUrl').value = game.image;
+    }
+    if (game.image && game.image.startsWith('data:')) {
+      currentImageBase64 = game.image;
+      $('#imagePreview').innerHTML = `<img src="${game.image}" alt="preview">`;
+    }
+  } else {
+    $('#gameModalTitle').textContent = 'Добавить игру';
+    $('#gameId').value = '';
+  }
+  $('#gameModal').classList.add('active');
 }
 
 $('#gameImage').addEventListener('change', (e) => {
-const file = e.target.files[0];
-if (!file) return;
-if (file.size > 2 * 1024 * 1024) {
-toast('Картинка слишком большая (макс. 2 МБ)', 'error');
-e.target.value = '';
-return;
-}
-const reader = new FileReader();
-reader.onload = (ev) => {
-currentImageBase64 = ev.target.result;
-$('#imagePreview').innerHTML = `<img src="${currentImageBase64}" alt="preview">`;
-};
-reader.readAsDataURL(file);
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) {
+    toast('Картинка слишком большая (макс. 2 МБ)', 'error');
+    e.target.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    currentImageBase64 = ev.target.result;
+    $('#imagePreview').innerHTML = `<img src="${currentImageBase64}" alt="preview">`;
+  };
+  reader.readAsDataURL(file);
 });
 
-$('#gameForm').addEventListener('submit', (e) => {
-e.preventDefault();
-const id = $('#gameId').value;
-let imageUrl = $('#gameImageUrl').value.trim();
-const gameData = {
-title: $('#gameTitle').value.trim(),
-console: $('#gameConsole').value,
-genre: $('#gameGenre').value.trim(),
-description: $('#gameDescription').value.trim(),
-image: currentImageBase64 || imageUrl || ''
-};
-if (id) {
-const idx = games.findIndex(g => g.id === id);
-if (idx !== -1) {
-games[idx] = { ...games[idx], ...gameData };
-toast('Игра обновлена', 'success');
-}
-} else {
-games.push({ id: uid(), ...gameData });
-toast('Игра добавлена!', 'success');
-}
-saveGames();
-renderAdminGames();
-renderClientGames();
-renderStats();
-$('#gameModal').classList.remove('active');
+$('#gameForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = $('#gameId').value;
+  let imageUrl = $('#gameImageUrl').value.trim();
+  const gameData = {
+    title: $('#gameTitle').value.trim(),
+    console: $('#gameConsole').value,
+    genre: $('#gameGenre').value.trim(),
+    description: $('#gameDescription').value.trim(),
+    image: currentImageBase64 || imageUrl || ''
+  };
+  
+  const btn = $('#submitGameBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Сохранение...';
+  
+  if (id) {
+    const existing = games.find(g => g.id === id);
+    gameData.id = id;
+    const ok = await saveGameToFirestore(gameData);
+    btn.disabled = false;
+    btn.textContent = 'Сохранить';
+    if (ok) toast('✅ Игра обновлена', 'success');
+  } else {
+    gameData.id = uid();
+    const ok = await saveGameToFirestore(gameData);
+    btn.disabled = false;
+    btn.textContent = 'Сохранить';
+    if (ok) toast('✅ Игра добавлена!', 'success');
+  }
+  $('#gameModal').classList.remove('active');
 });
 
-function deleteGame(id) {
-const game = games.find(g => g.id === id);
-if (!game) return;
-if (!confirm(`Удалить игру "${game.title}"? Брони останутся в истории.`)) return;
-games = games.filter(g => g.id !== id);
-saveGames();
-renderAdminGames();
-renderClientGames();
-renderStats();
-toast('Игра удалена', 'warning');
+async function deleteGame(id) {
+  const game = games.find(g => g.id === id);
+  if (!game) return;
+  if (!confirm(`Удалить игру "${game.title}"?`)) return;
+  const ok = await deleteGameFromFirestore(id);
+  if (ok) toast('Игра удалена', 'warning');
 }
 
-function resetGames() {
-if (!confirm('⚠️ ВНИМАНИЕ! Это удалит ВСЕ ваши игры и заменит их на 60 стандартных. Продолжить?')) return;
-games = [...DEFAULT_GAMES];
-saveGames();
-renderAdminGames();
-renderClientGames();
-renderStats();
-toast('Игры сброшены к стандартным (60 игр)', 'success');
-}
+$('#resetGamesBtn').addEventListener('click', async () => {
+  if (!confirm('⚠️ ВНИМАНИЕ! Это удалит ВСЕ ваши игры и заменит их на 60 стандартных. Продолжить?')) return;
+  const ok = await resetGamesToDefault();
+  if (ok) renderAdminGames();
+});
 
 // ============ БЭКАП / ВОССТАНОВЛЕНИЕ ============
-function updateBackupInfo() {
-const gc = $('#backupGamesCount');
-const bc = $('#backupBookingsCount');
-const sz = $('#backupSize');
-if (gc) gc.textContent = games.length;
-if (bc) bc.textContent = bookings.length;
-if (sz) sz.textContent = getStorageSize();
-}
-
 function exportData() {
-const data = {
-version: '1.0',
-exportDate: new Date().toISOString(),
-games: games,
-bookings: bookings
-};
-const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-const url = URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href = url;
-a.download = `21gamezone_backup_${new Date().toISOString().split('T')[0]}.json`;
-document.body.appendChild(a);
-a.click();
-document.body.removeChild(a);
-URL.revokeObjectURL(url);
-toast('✅ Бэкап сохранён в файл', 'success');
+  const data = {
+    version: '1.0',
+    exportDate: new Date().toISOString(),
+    games: games,
+    bookings: bookings
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `21gamezone_backup_${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('✅ Бэкап сохранён', 'success');
 }
 
-function importData(file) {
-const reader = new FileReader();
-reader.onload = (e) => {
-try {
-const data = JSON.parse(e.target.result);
-if (!data.games || !Array.isArray(data.games)) {
-toast('❌ Неверный формат файла', 'error');
-return;
-}
-if (!confirm(`Загрузить ${data.games.length} игр и ${(data.bookings || []).length} броней? Текущие данные будут заменены.`)) return;
-games = data.games;
-bookings = data.bookings || [];
-saveGames();
-saveBookings();
-renderAdminGames();
-renderClientGames();
-renderAdminBookings();
-renderStats();
-updateBackupInfo();
-toast('✅ Данные успешно загружены!', 'success');
-} catch (err) {
-toast('❌ Ошибка чтения файла: ' + err.message, 'error');
-}
-};
-reader.readAsText(file);
+async function importData(file) {
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.games || !Array.isArray(data.games)) {
+        toast('❌ Неверный формат', 'error');
+        return;
+      }
+      if (!confirm(`Загрузить ${data.games.length} игр и ${(data.bookings || []).length} броней в Firebase?`)) return;
+      
+      toast('⏳ Загрузка в Firebase...', 'warning');
+      
+      // Очищаем и загружаем
+      await clearAllFirestore();
+      
+      const batchGames = db.batch();
+      data.games.forEach(game => {
+        const ref = gamesCollection.doc(game.id);
+        batchGames.set(ref, game);
+      });
+      await batchGames.commit();
+      
+      if (data.bookings && data.bookings.length > 0) {
+        const batchBookings = db.batch();
+        data.bookings.forEach(b => {
+          const ref = bookingsCollection.doc(b.id);
+          batchBookings.set(ref, b);
+        });
+        await batchBookings.commit();
+      }
+      
+      toast('✅ Данные загружены в Firebase!', 'success');
+    } catch (err) {
+      toast('❌ Ошибка: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
 }
 
-function clearAllData() {
-if (!confirm('⚠️ УДАЛИТЬ ВСЕ ДАННЫЕ? Игры, брони, настройки — всё будет стёрто!')) return;
-if (!confirm('Точно-точно? Это необратимо!')) return;
-try {
-localStorage.removeItem(STORAGE.GAMES);
-localStorage.removeItem(STORAGE.BOOKINGS);
-localStorage.removeItem(STORAGE.INITIALIZED);
-games = [...DEFAULT_GAMES];
-bookings = [];
-saveGames();
-saveBookings();
-localStorage.setItem(STORAGE.INITIALIZED, 'true');
-renderAdminGames();
-renderClientGames();
-renderAdminBookings();
-renderStats();
-updateBackupInfo();
-toast('🗑 Все данные очищены. Загружены стандартные игры.', 'warning');
-} catch (e) {
-toast('❌ Ошибка очистки: ' + e.message, 'error');
-}
-}
+$('#clearAllBtn').addEventListener('click', async () => {
+  if (!confirm('⚠️ УДАЛИТЬ ВСЕ ДАННЫЕ В FIREBASE? Это необратимо!')) return;
+  if (!confirm('Точно-точно?')) return;
+  await clearAllFirestore();
+});
 
 $('#exportBtn').addEventListener('click', exportData);
 $('#importBtn').addEventListener('click', () => $('#importFile').click());
 $('#importFile').addEventListener('change', (e) => {
-const file = e.target.files[0];
-if (file) importData(file);
-e.target.value = '';
+  const file = e.target.files[0];
+  if (file) importData(file);
+  e.target.value = '';
 });
-$('#clearAllBtn').addEventListener('click', clearAllData);
 
+// ============ АДМИНКА ============
 function checkAuth() {
-return localStorage.getItem(STORAGE.AUTH) === 'true';
+  return localStorage.getItem(STORAGE.AUTH) === 'true';
 }
 
 function showAdminPanel(show) {
-$('#loginScreen').style.display = show ? 'none' : 'flex';
-$('#adminPanel').style.display = show ? 'block' : 'none';
-if (show) {
-renderAdminGames();
-renderAdminBookings();
-renderStats();
-updateBackupInfo();
-}
+  $('#loginScreen').style.display = show ? 'none' : 'flex';
+  $('#adminPanel').style.display = show ? 'block' : 'none';
+  if (show) {
+    renderAdminGames();
+    renderAdminBookings();
+    renderStats();
+  }
 }
 
 $('#loginForm').addEventListener('submit', (e) => {
-e.preventDefault();
-const login = $('#loginUser').value.trim();
-const pass = $('#loginPass').value;
-if (login === ADMIN_CREDENTIALS.login && pass === ADMIN_CREDENTIALS.password) {
-localStorage.setItem(STORAGE.AUTH, 'true');
-showAdminPanel(true);
-toast('Добро пожаловать, админ! 🎮', 'success');
-} else {
-toast('Неверный логин или пароль', 'error');
-}
+  e.preventDefault();
+  const login = $('#loginUser').value.trim();
+  const pass = $('#loginPass').value;
+  if (login === ADMIN_CREDENTIALS.login && pass === ADMIN_CREDENTIALS.password) {
+    localStorage.setItem(STORAGE.AUTH, 'true');
+    showAdminPanel(true);
+    toast('Добро пожаловать, админ! 🎮', 'success');
+  } else {
+    toast('Неверный логин или пароль', 'error');
+  }
 });
 
 $('#adminToggleBtn').addEventListener('click', () => {
-const adminView = $('#adminView');
-const clientView = $('#clientView');
-if (adminView.classList.contains('active')) {
-adminView.classList.remove('active');
-clientView.classList.add('active');
-$('#adminToggleBtn').textContent = '⚙ Админ';
-} else {
-clientView.classList.remove('active');
-adminView.classList.add('active');
-$('#adminToggleBtn').textContent = '🎮 На сайт';
-if (checkAuth()) showAdminPanel(true);
-else showAdminPanel(false);
-}
+  const adminView = $('#adminView');
+  const clientView = $('#clientView');
+  if (adminView.classList.contains('active')) {
+    adminView.classList.remove('active');
+    clientView.classList.add('active');
+    $('#adminToggleBtn').textContent = '⚙ Админ';
+  } else {
+    clientView.classList.remove('active');
+    adminView.classList.add('active');
+    $('#adminToggleBtn').textContent = '🎮 На сайт';
+    if (checkAuth()) showAdminPanel(true);
+    else showAdminPanel(false);
+  }
 });
 
 $$('.tab-btn').forEach(btn => {
-btn.addEventListener('click', () => {
-$$('.tab-btn').forEach(b => b.classList.remove('active'));
-$$('.tab-content').forEach(c => c.classList.remove('active'));
-btn.classList.add('active');
-$(`#tab-${btn.dataset.tab}`).classList.add('active');
-if (btn.dataset.tab === 'stats') renderStats();
-if (btn.dataset.tab === 'bookings') renderAdminBookings();
-if (btn.dataset.tab === 'games') renderAdminGames();
-if (btn.dataset.tab === 'backup') updateBackupInfo();
-});
+  btn.addEventListener('click', () => {
+    $$('.tab-btn').forEach(b => b.classList.remove('active'));
+    $$('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    $(`#tab-${btn.dataset.tab}`).classList.add('active');
+    if (btn.dataset.tab === 'stats') renderStats();
+    if (btn.dataset.tab === 'bookings') renderAdminBookings();
+    if (btn.dataset.tab === 'games') renderAdminGames();
+  });
 });
 
 $$('.nav-btn[data-filter]').forEach(btn => {
-btn.addEventListener('click', () => {
-$$('.nav-btn[data-filter]').forEach(b => b.classList.remove('active'));
-btn.classList.add('active');
-currentFilter = btn.dataset.filter;
-renderClientGames();
-});
+  btn.addEventListener('click', () => {
+    $$('.nav-btn[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderClientGames();
+  });
 });
 
 $('#myBookingsBtn').addEventListener('click', () => {
-renderMyBookings();
-$('#bookingsModal').classList.add('active');
+  renderMyBookings();
+  $('#bookingsModal').classList.add('active');
 });
 
 $$('.close-btn').forEach(btn => {
-btn.addEventListener('click', () => {
-const modalId = btn.dataset.close;
-$(`#${modalId}`).classList.remove('active');
-});
+  btn.addEventListener('click', () => {
+    const modalId = btn.dataset.close;
+    $(`#${modalId}`).classList.remove('active');
+  });
 });
 
 $$('.modal').forEach(modal => {
-modal.addEventListener('click', (e) => {
-if (e.target === modal) modal.classList.remove('active');
-});
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.remove('active');
+  });
 });
 
 $('#addGameBtn').addEventListener('click', () => openGameModal());
-$('#resetGamesBtn').addEventListener('click', resetGames);
 
-// Инициализация
-getUserId();
-renderClientGames();
-$('#gamesCount').textContent = games.length;
-updateBackupInfo();
-updateDbStatus(true);
+// ============ ЗАПУСК ============
+async function init() {
+  getUserId();
+  updateDbStatus('loading', 'Firebase: Подключение...');
+  
+  try {
+    await initializeDefaultGames();
+    initFirestoreListeners();
+    console.log(`%c🔥 Firebase подключен! Project: ${firebaseConfig.projectId}`, 'color:#a855f7;font-size:16px;font-weight:bold;');
+  } catch (error) {
+    console.error('❌ Критическая ошибка инициализации:', error);
+    updateDbStatus('error', 'Firebase: Offline');
+    toast('Ошибка подключения к Firebase', 'error');
+    hideLoader();
+  }
+}
+
+init();
 </script>
 </body>
 </html>

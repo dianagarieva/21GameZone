@@ -7,607 +7,567 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-    --bg-dark: #0a0a1a;
-    --bg-darker: #050510;
-    --bg-card: #15152b;
-    --primary: #a855f7;
-    --primary-glow: #c084fc;
-    --secondary: #06b6d4;
-    --accent: #22d3ee;
-    --success: #10b981;
-    --danger: #ef4444;
-    --warning: #f59e0b;
-    --text: #e5e7eb;
-    --text-dim: #9ca3af;
-    --border: #2d2d52;
-    --gradient-1: linear-gradient(135deg, #a855f7 0%, #06b6d4 100%);
+--bg-dark: #0a0a1a;
+--bg-darker: #050510;
+--bg-card: #15152b;
+--primary: #a855f7;
+--primary-glow: #c084fc;
+--secondary: #06b6d4;
+--accent: #22d3ee;
+--success: #10b981;
+--danger: #ef4444;
+--warning: #f59e0b;
+--text: #e5e7eb;
+--text-dim: #9ca3af;
+--border: #2d2d52;
+--gradient-1: linear-gradient(135deg, #a855f7 0%, #06b6d4 100%);
 }
 body {
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: radial-gradient(ellipse at top, #1a1a3e 0%, #0a0a1a 50%, #050510 100%);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
+font-family: 'Segoe UI', Tahoma, sans-serif;
+background: radial-gradient(ellipse at top, #1a1a3e 0%, #0a0a1a 50%, #050510 100%);
+color: var(--text);
+min-height: 100vh;
+overflow-x: hidden;
 }
 body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-        radial-gradient(circle at 20% 30%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(6, 182, 212, 0.15) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
+content: '';
+position: fixed;
+inset: 0;
+background-image:
+radial-gradient(circle at 20% 30%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+radial-gradient(circle at 80% 70%, rgba(6, 182, 212, 0.15) 0%, transparent 50%);
+pointer-events: none;
+z-index: 0;
 }
 body > * { position: relative; z-index: 1; }
 .accent { color: var(--accent); text-shadow: 0 0 20px var(--accent); }
-
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-    background: rgba(10, 10, 26, 0.8);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    flex-wrap: wrap;
-    gap: 15px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 20px 40px;
+background: rgba(10, 10, 26, 0.8);
+backdrop-filter: blur(10px);
+border-bottom: 1px solid var(--border);
+position: sticky;
+top: 0;
+z-index: 100;
+flex-wrap: wrap;
+gap: 15px;
 }
 .logo { display: flex; align-items: center; gap: 12px; }
 .logo-icon {
-    font-size: 36px;
-    filter: drop-shadow(0 0 10px var(--primary));
-    animation: pulse 2s infinite;
+font-size: 36px;
+filter: drop-shadow(0 0 10px var(--primary));
+animation: pulse 2s infinite;
 }
 @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+0%, 100% { transform: scale(1); }
+50% { transform: scale(1.1); }
 }
 .logo h1 {
-    font-size: 28px;
-    font-weight: 800;
-    background: var(--gradient-1);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+font-size: 28px;
+font-weight: 800;
+background: var(--gradient-1);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
 }
 .nav { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .nav-btn, .admin-link, .my-bookings-btn {
-    padding: 10px 18px;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    transition: all 0.3s;
-    text-decoration: none;
+padding: 10px 18px;
+background: transparent;
+border: 1px solid var(--border);
+color: var(--text);
+border-radius: 8px;
+cursor: pointer;
+font-size: 14px;
+font-weight: 600;
+transition: all 0.3s;
+text-decoration: none;
 }
 .nav-btn:hover, .admin-link:hover, .my-bookings-btn:hover {
-    border-color: var(--primary);
-    box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
-    transform: translateY(-2px);
+border-color: var(--primary);
+box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+transform: translateY(-2px);
 }
 .nav-btn.active {
-    background: var(--gradient-1);
-    border-color: transparent;
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
+background: var(--gradient-1);
+border-color: transparent;
+box-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
 }
 .admin-link {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: var(--danger);
-    color: var(--danger);
+background: rgba(239, 68, 68, 0.1);
+border-color: var(--danger);
+color: var(--danger);
 }
 .my-bookings-btn {
-    background: rgba(168, 85, 247, 0.1);
-    border-color: var(--primary);
-    color: var(--primary);
+background: rgba(168, 85, 247, 0.1);
+border-color: var(--primary);
+color: var(--primary);
 }
-
 .view { display: none; }
 .view.active { display: block; }
-
 .hero { text-align: center; padding: 60px 20px 40px; }
 .hero h2 {
-    font-size: 48px;
-    font-weight: 800;
-    margin-bottom: 15px;
-    text-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
+font-size: 48px;
+font-weight: 800;
+margin-bottom: 15px;
+text-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
 }
 .hero p { font-size: 18px; color: var(--text-dim); letter-spacing: 2px; }
-
 .games-section { padding: 20px 40px 60px; }
 .games-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+gap: 25px;
 }
 .game-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    transition: all 0.4s;
-    position: relative;
+background: var(--bg-card);
+border: 1px solid var(--border);
+border-radius: 16px;
+overflow: hidden;
+transition: all 0.4s;
+position: relative;
 }
 .game-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(168, 85, 247, 0.3);
-    border-color: var(--primary);
+transform: translateY(-8px);
+box-shadow: 0 20px 40px rgba(168, 85, 247, 0.3);
+border-color: var(--primary);
 }
 .game-image {
-    width: 100%;
-    height: 200px;
-    background: linear-gradient(135deg, #1a1a3e, #2d1b4e);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
+width: 100%;
+height: 200px;
+background: linear-gradient(135deg, #1a1a3e, #2d1b4e);
+display: flex;
+align-items: center;
+justify-content: center;
+position: relative;
+overflow: hidden;
 }
 .game-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s;
+width: 100%;
+height: 100%;
+object-fit: cover;
+transition: transform 0.3s;
 }
-.game-card:hover .game-image img { transform: scale(1.05); }
+.game-card:hover .game-image img {
+transform: scale(1.05);
+}
 .console-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    backdrop-filter: blur(10px);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    z-index: 2;
+position: absolute;
+top: 10px;
+right: 10px;
+padding: 5px 12px;
+border-radius: 20px;
+font-size: 12px;
+font-weight: 700;
+backdrop-filter: blur(10px);
+text-transform: uppercase;
+letter-spacing: 1px;
+z-index: 2;
 }
 .console-badge.PS5 { background: rgba(0, 55, 145, 0.95); color: #fff; }
 .console-badge.Xbox { background: rgba(16, 124, 16, 0.95); color: #fff; }
 .console-badge.VR { background: rgba(236, 72, 153, 0.95); color: #fff; }
 .free-badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    background: rgba(16, 185, 129, 0.95);
-    color: #fff;
-    z-index: 2;
-    text-transform: uppercase;
+position: absolute;
+top: 10px;
+left: 10px;
+padding: 5px 12px;
+border-radius: 20px;
+font-size: 12px;
+font-weight: 700;
+background: rgba(16, 185, 129, 0.95);
+color: #fff;
+z-index: 2;
+text-transform: uppercase;
 }
 .game-info { padding: 20px; }
 .game-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
 .game-genre { font-size: 13px; color: var(--accent); margin-bottom: 10px; font-weight: 600; }
 .game-description {
-    font-size: 14px;
-    color: var(--text-dim);
-    margin-bottom: 15px;
-    line-height: 1.5;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+font-size: 14px;
+color: var(--text-dim);
+margin-bottom: 15px;
+line-height: 1.5;
+display: -webkit-box;
+-webkit-line-clamp: 2;
+-webkit-box-orient: vertical;
+overflow: hidden;
 }
 .game-footer { display: flex; justify-content: space-between; align-items: center; }
 .btn-book {
-    padding: 10px 20px;
-    background: var(--gradient-1);
-    border: none;
-    color: white;
-    border-radius: 8px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-size: 14px;
-    width: 100%;
+padding: 10px 20px;
+background: var(--gradient-1);
+border: none;
+color: white;
+border-radius: 8px;
+font-weight: 700;
+cursor: pointer;
+transition: all 0.3s;
+font-size: 14px;
+width: 100%;
 }
 .btn-book:hover { transform: scale(1.02); box-shadow: 0 0 20px var(--primary-glow); }
-
 .modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(5px);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    overflow-y: auto;
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0, 0, 0, 0.85);
+backdrop-filter: blur(5px);
+z-index: 1000;
+justify-content: center;
+align-items: center;
+padding: 20px;
+overflow-y: auto;
 }
 .modal.active { display: flex; }
 .modal-content {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 35px;
-    max-width: 550px;
-    width: 100%;
-    position: relative;
-    box-shadow: 0 0 60px rgba(168, 85, 247, 0.3);
-    animation: modalIn 0.3s;
-    max-height: 90vh;
-    overflow-y: auto;
+background: var(--bg-card);
+border: 1px solid var(--border);
+border-radius: 20px;
+padding: 35px;
+max-width: 550px;
+width: 100%;
+position: relative;
+box-shadow: 0 0 60px rgba(168, 85, 247, 0.3);
+animation: modalIn 0.3s;
+max-height: 90vh;
+overflow-y: auto;
 }
 .modal-large { max-width: 850px; }
 @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+from { opacity: 0; transform: scale(0.9); }
+to { opacity: 1; transform: scale(1); }
 }
 .close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: transparent;
-    border: none;
-    color: var(--text);
-    font-size: 32px;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    transition: all 0.3s;
+position: absolute;
+top: 15px;
+right: 15px;
+background: transparent;
+border: none;
+color: var(--text);
+font-size: 32px;
+cursor: pointer;
+width: 40px;
+height: 40px;
+border-radius: 50%;
+transition: all 0.3s;
 }
 .close-btn:hover { background: var(--danger); transform: rotate(90deg); }
 .modal-content h2 {
-    margin-bottom: 20px;
-    background: var(--gradient-1);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+margin-bottom: 20px;
+background: var(--gradient-1);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
 }
 .game-preview {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    padding: 15px;
-    background: rgba(168, 85, 247, 0.1);
-    border-radius: 12px;
-    margin-bottom: 20px;
+display: flex;
+gap: 15px;
+align-items: center;
+padding: 15px;
+background: rgba(168, 85, 247, 0.1);
+border-radius: 12px;
+margin-bottom: 20px;
 }
 .game-preview img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; }
-
 .form-group { margin-bottom: 18px; }
 .form-group label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-dim);
+display: block;
+margin-bottom: 6px;
+font-size: 14px;
+font-weight: 600;
+color: var(--text-dim);
 }
 .form-group input,
 .form-group select,
 .form-group textarea {
-    width: 100%;
-    padding: 12px 15px;
-    background: var(--bg-darker);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    font-size: 15px;
-    transition: all 0.3s;
-    font-family: inherit;
+width: 100%;
+padding: 12px 15px;
+background: var(--bg-darker);
+border: 1px solid var(--border);
+border-radius: 10px;
+color: var(--text);
+font-size: 15px;
+transition: all 0.3s;
+font-family: inherit;
 }
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+outline: none;
+border-color: var(--primary);
+box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
 }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-
+/* Временные слоты */
 .time-slots {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-top: 8px;
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 10px;
+margin-top: 8px;
 }
 .time-slot {
-    padding: 10px;
-    background: var(--bg-darker);
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-weight: 600;
+padding: 10px;
+background: var(--bg-darker);
+border: 2px solid var(--border);
+border-radius: 8px;
+text-align: center;
+cursor: pointer;
+transition: all 0.3s;
+font-weight: 600;
 }
 .time-slot:hover {
-    border-color: var(--primary);
-    background: rgba(168, 85, 247, 0.1);
+border-color: var(--primary);
+background: rgba(168, 85, 247, 0.1);
 }
 .time-slot.selected {
-    background: var(--gradient-1);
-    border-color: var(--primary);
-    color: white;
+background: var(--gradient-1);
+border-color: var(--primary);
+color: white;
 }
 .time-slot.disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-    text-decoration: line-through;
+opacity: 0.3;
+cursor: not-allowed;
+text-decoration: line-through;
 }
-
 .btn-primary {
-    width: 100%;
-    padding: 14px;
-    background: var(--gradient-1);
-    border: none;
-    color: white;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
+width: 100%;
+padding: 14px;
+background: var(--gradient-1);
+border: none;
+color: white;
+border-radius: 10px;
+font-size: 16px;
+font-weight: 700;
+cursor: pointer;
+transition: all 0.3s;
 }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(168, 85, 247, 0.5); }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-.btn-danger {
-    padding: 10px 20px;
-    background: var(--danger);
-    border: none;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s;
+.btn-secondary {
+padding: 10px 20px;
+background: transparent;
+border: 1px solid var(--border);
+color: var(--text);
+border-radius: 8px;
+cursor: pointer;
+font-weight: 600;
+transition: all 0.3s;
 }
+.btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+.btn-danger {
+padding: 10px 20px;
+background: var(--danger);
+border: none;
+color: white;
+border-radius: 8px;
+cursor: pointer;
+font-weight: 600;
+transition: all 0.3s;
+}
+.btn-danger:hover { background: #dc2626; box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
 .btn-small {
-    padding: 6px 12px;
-    font-size: 13px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s;
-    color: white;
+padding: 6px 12px;
+font-size: 13px;
+border-radius: 6px;
+border: none;
+cursor: pointer;
+font-weight: 600;
+transition: all 0.3s;
+color: white;
 }
 .btn-edit { background: var(--warning); }
 .btn-delete { background: var(--danger); }
 .btn-cancel { background: var(--text-dim); }
 .btn-small:hover { transform: scale(1.05); }
 .hint { font-size: 12px; color: var(--text-dim); margin-top: 5px; display: block; }
-
+.image-preview { margin-top: 10px; max-width: 200px; border-radius: 10px; overflow: hidden; }
+.image-preview img { width: 100%; display: block; }
 .bookings-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    max-height: 60vh;
-    overflow-y: auto;
+display: flex;
+flex-direction: column;
+gap: 12px;
+max-height: 60vh;
+overflow-y: auto;
 }
 .booking-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background: var(--bg-darker);
-    border-radius: 12px;
-    border-left: 4px solid var(--primary);
-    gap: 15px;
-    flex-wrap: wrap;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 15px;
+background: var(--bg-darker);
+border-radius: 12px;
+border-left: 4px solid var(--primary);
+gap: 15px;
+flex-wrap: wrap;
 }
 .booking-item.cancelled { border-left-color: var(--danger); opacity: 0.6; }
 .booking-info { flex: 1; min-width: 200px; }
 .booking-info h4 { margin-bottom: 5px; }
 .booking-info p { font-size: 13px; color: var(--text-dim); }
-
 .login-screen {
-    min-height: calc(100vh - 80px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+min-height: calc(100vh - 80px);
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 20px;
 }
 .login-box {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 40px;
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 0 60px rgba(168, 85, 247, 0.3);
+background: var(--bg-card);
+border: 1px solid var(--border);
+border-radius: 20px;
+padding: 40px;
+max-width: 400px;
+width: 100%;
+text-align: center;
+box-shadow: 0 0 60px rgba(168, 85, 247, 0.3);
 }
 .login-box h2 { margin: 20px 0; color: var(--text); }
 .login-box .logo { justify-content: center; }
-
 .admin-panel { padding: 20px 40px; }
 .admin-tabs {
-    display: flex;
-    gap: 5px;
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-    margin-bottom: 20px;
+display: flex;
+gap: 5px;
+border-bottom: 1px solid var(--border);
+flex-wrap: wrap;
+margin-bottom: 20px;
 }
 .tab-btn {
-    padding: 12px 24px;
-    background: transparent;
-    border: none;
-    color: var(--text-dim);
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-    border-bottom: 3px solid transparent;
-    transition: all 0.3s;
+padding: 12px 24px;
+background: transparent;
+border: none;
+color: var(--text-dim);
+cursor: pointer;
+font-size: 15px;
+font-weight: 600;
+border-bottom: 3px solid transparent;
+transition: all 0.3s;
 }
 .tab-btn:hover { color: var(--text); }
 .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-    gap: 15px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 25px;
+flex-wrap: wrap;
+gap: 15px;
 }
 .section-header h2 { margin: 0; }
 .section-header .btn-primary { width: auto; padding: 12px 24px; }
-
 .bookings-table-wrapper {
-    overflow-x: auto;
-    background: var(--bg-card);
-    border-radius: 12px;
-    border: 1px solid var(--border);
+overflow-x: auto;
+background: var(--bg-card);
+border-radius: 12px;
+border: 1px solid var(--border);
 }
 .bookings-table { width: 100%; border-collapse: collapse; min-width: 800px; }
 .bookings-table th, .bookings-table td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
+padding: 15px;
+text-align: left;
+border-bottom: 1px solid var(--border);
 }
 .bookings-table th {
-    background: var(--bg-darker);
-    color: var(--text-dim);
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+background: var(--bg-darker);
+color: var(--text-dim);
+font-size: 13px;
+text-transform: uppercase;
+letter-spacing: 1px;
 }
 .bookings-table tr:hover td { background: rgba(168, 85, 247, 0.05); }
 .bookings-table tr.cancelled td { opacity: 0.5; }
 .status-badge {
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
+padding: 4px 10px;
+border-radius: 12px;
+font-size: 12px;
+font-weight: 700;
+text-transform: uppercase;
 }
 .status-active { background: rgba(16, 185, 129, 0.2); color: var(--success); }
 .status-cancelled { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
-
 .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+gap: 20px;
 }
 .stat-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 25px;
-    text-align: center;
-    transition: all 0.3s;
+background: var(--bg-card);
+border: 1px solid var(--border);
+border-radius: 16px;
+padding: 25px;
+text-align: center;
+transition: all 0.3s;
 }
 .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3); }
 .stat-icon { font-size: 48px; margin-bottom: 10px; }
 .stat-value {
-    font-size: 36px;
-    font-weight: 800;
-    background: var(--gradient-1);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 5px;
+font-size: 36px;
+font-weight: 800;
+background: var(--gradient-1);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+margin-bottom: 5px;
 }
 .stat-label { color: var(--text-dim); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
-
 .toast-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 2000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+position: fixed;
+top: 20px;
+right: 20px;
+z-index: 2000;
+display: flex;
+flex-direction: column;
+gap: 10px;
 }
 .toast {
-    padding: 15px 25px;
-    background: var(--bg-card);
-    border-left: 4px solid var(--primary);
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    animation: toastIn 0.3s;
-    min-width: 250px;
+padding: 15px 25px;
+background: var(--bg-card);
+border-left: 4px solid var(--primary);
+border-radius: 10px;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+animation: toastIn 0.3s;
+min-width: 250px;
 }
 .toast.success { border-left-color: var(--success); }
 .toast.error { border-left-color: var(--danger); }
 .toast.warning { border-left-color: var(--warning); }
 @keyframes toastIn {
-    from { opacity: 0; transform: translateX(100px); }
-    to { opacity: 1; transform: translateX(0); }
+from { opacity: 0; transform: translateX(100px); }
+to { opacity: 1; transform: translateX(0); }
 }
-
 .footer {
-    text-align: center;
-    padding: 30px;
-    color: var(--text-dim);
-    border-top: 1px solid var(--border);
-    margin-top: 40px;
+text-align: center;
+padding: 30px;
+color: var(--text-dim);
+border-top: 1px solid var(--border);
+margin-top: 40px;
 }
-
 .admin-game-actions {
-    display: flex;
-    gap: 8px;
-    padding: 10px 20px 20px;
+display: flex;
+gap: 8px;
+padding: 10px 20px 20px;
 }
-
 .reset-btn {
-    background: var(--warning);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
+background: var(--danger);
+color: white;
+border: none;
+padding: 8px 16px;
+border-radius: 6px;
+cursor: pointer;
+font-size: 13px;
+margin-left: 10px;
 }
-.reset-btn:hover { background: #d97706; }
-
-.loading {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255,255,255,.3);
-    border-radius: 50%;
-    border-top-color: white;
-    animation: spin 1s ease-in-out infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.firebase-status {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    padding: 8px 15px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    font-size: 12px;
-    z-index: 999;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--success);
-    animation: blink 2s infinite;
-}
-.status-dot.error { background: var(--danger); animation: none; }
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-}
-
+.reset-btn:hover { background: #dc2626; }
 @media (max-width: 768px) {
-    .header { padding: 15px 20px; }
-    .hero h2 { font-size: 32px; }
-    .games-section, .admin-panel { padding: 20px; }
-    .form-row { grid-template-columns: 1fr; }
-    .time-slots { grid-template-columns: repeat(2, 1fr); }
+.header { padding: 15px 20px; }
+.hero h2 { font-size: 32px; }
+.games-section, .admin-panel { padding: 20px; }
+.form-row { grid-template-columns: 1fr; }
+.time-slots { grid-template-columns: repeat(2, 1fr); }
 }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: var(--bg-darker); }
@@ -615,1002 +575,844 @@ body > * { position: relative; z-index: 1; }
 </style>
 </head>
 <body>
-
 <header class="header">
-    <div class="logo">
-        <span class="logo-icon">🎮</span>
-        <h1>21<span class="accent">Game</span>Zone</h1>
-    </div>
-    <nav class="nav">
-        <button class="nav-btn active" data-filter="all">Все</button>
-        <button class="nav-btn" data-filter="PS5">PlayStation 5</button>
-        <button class="nav-btn" data-filter="Xbox">Xbox</button>
-        <button class="nav-btn" data-filter="VR">VR</button>
-        <button class="my-bookings-btn" id="myBookingsBtn">📋 Мои брони</button>
-        <button class="admin-link" id="adminToggleBtn">⚙ Админ</button>
-    </nav>
+<div class="logo">
+<span class="logo-icon">🎮</span>
+<h1>21<span class="accent">Game</span>Zone</h1>
+</div>
+<nav class="nav">
+<button class="nav-btn active" data-filter="all">Все</button>
+<button class="nav-btn" data-filter="PS5">PlayStation 5</button>
+<button class="nav-btn" data-filter="Xbox">Xbox</button>
+<button class="nav-btn" data-filter="VR">VR</button>
+<button class="my-bookings-btn" id="myBookingsBtn">📋 Мои брони</button>
+<button class="admin-link" id="adminToggleBtn">⚙ Админ</button>
+</nav>
 </header>
-
 <div class="view active" id="clientView">
-    <section class="hero">
-        <h2>Забронируй свою <span class="accent">игру</span> прямо сейчас!</h2>
-        <p>PlayStation 5 • Xbox • VR — <span style="color:var(--success);font-weight:700;">БЕСПЛАТНО</span> для клиентов</p>
-    </section>
-    <section class="games-section">
-        <div class="games-grid" id="gamesGrid">
-            <div style="grid-column:1/-1;text-align:center;padding:40px;">
-                <div class="loading" style="width:40px;height:40px;border-width:4px;"></div>
-                <p style="margin-top:15px;color:var(--text-dim);">Загрузка игр из Firebase...</p>
-            </div>
-        </div>
-    </section>
+<section class="hero">
+<h2>Забронируй свою <span class="accent">игру</span> прямо сейчас!</h2>
+<p>PlayStation 5 • Xbox • VR — <span style="color:var(--success);font-weight:700;">БЕСПЛАТНО</span> для клиентов</p>
+</section>
+<section class="games-section">
+<div class="games-grid" id="gamesGrid"></div>
+</section>
 </div>
-
 <div class="view" id="adminView">
-    <div id="loginScreen" class="login-screen">
-        <div class="login-box">
-            <div class="logo">
-                <span class="logo-icon">🔐</span>
-                <h1>21<span class="accent">Game</span>Zone</h1>
-            </div>
-            <h2>Вход в админ-панель</h2>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label>Логин</label>
-                    <input type="text" id="loginUser" required placeholder="admin">
-                </div>
-                <div class="form-group">
-                    <label>Пароль</label>
-                    <input type="password" id="loginPass" required placeholder="admin123">
-                </div>
-                <button type="submit" class="btn-primary">Войти</button>
-                <p class="hint">По умолчанию: admin / admin123</p>
-            </form>
-        </div>
-    </div>
-
-    <div id="adminPanel" class="admin-panel" style="display:none;">
-        <div class="admin-tabs">
-            <button class="tab-btn active" data-tab="games">🎮 Игры</button>
-            <button class="tab-btn" data-tab="bookings">📋 Бронирования</button>
-            <button class="tab-btn" data-tab="stats">📊 Статистика</button>
-        </div>
-
-        <section class="tab-content active" id="tab-games">
-            <div class="section-header">
-                <div>
-                    <h2>Управление играми</h2>
-                    <small style="color:var(--text-dim)">Всего игр: <strong id="gamesCount">0</strong></small>
-                </div>
-                <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                    <button class="reset-btn" id="resetGamesBtn">🔄 Загрузить 60 игр</button>
-                    <button class="btn-primary" id="addGameBtn" style="width:auto;padding:12px 24px;">+ Добавить игру</button>
-                </div>
-            </div>
-            <div class="games-grid" id="adminGamesGrid"></div>
-        </section>
-
-        <section class="tab-content" id="tab-bookings">
-            <h2 style="margin-bottom:20px;">Все бронирования</h2>
-            <div class="bookings-table-wrapper">
-                <table class="bookings-table">
-                    <thead>
-                        <tr>
-                            <th>Игра</th>
-                            <th>Консоль</th>
-                            <th>Клиент</th>
-                            <th>Телефон</th>
-                            <th>Дата</th>
-                            <th>Время</th>
-                            <th>Часов</th>
-                            <th>Статус</th>
-                            <th>Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminBookingsBody"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <section class="tab-content" id="tab-stats">
-            <h2 style="margin-bottom:20px;">📊 Статистика</h2>
-            <div class="stats-grid" id="statsGrid"></div>
-        </section>
-    </div>
+<div id="loginScreen" class="login-screen">
+<div class="login-box">
+<div class="logo">
+<span class="logo-icon">🔐</span>
+<h1>21<span class="accent">Game</span>Zone</h1>
 </div>
-
+<h2>Вход в админ-панель</h2>
+<form id="loginForm">
+<div class="form-group">
+<label>Логин</label>
+<input type="text" id="loginUser" required placeholder="admin">
+</div>
+<div class="form-group">
+<label>Пароль</label>
+<input type="password" id="loginPass" required placeholder="admin123">
+</div>
+<button type="submit" class="btn-primary">Войти</button>
+<p class="hint">По умолчанию: admin / admin123</p>
+</form>
+</div>
+</div>
+<div id="adminPanel" class="admin-panel" style="display:none;">
+<div class="admin-tabs">
+<button class="tab-btn active" data-tab="games">🎮 Игры</button>
+<button class="tab-btn" data-tab="bookings">📋 Бронирования</button>
+<button class="tab-btn" data-tab="stats">📊 Статистика</button>
+</div>
+<section class="tab-content active" id="tab-games">
+<div class="section-header">
+<div>
+<h2>Управление играми</h2>
+<small style="color:var(--text-dim)">Всего игр: <strong id="gamesCount">0</strong></small>
+</div>
+<div>
+<button class="reset-btn" id="resetGamesBtn">🔄 Сбросить все игры</button>
+<button class="btn-primary" id="addGameBtn" style="width:auto;padding:12px 24px;">+ Добавить игру</button>
+</div>
+</div>
+<div class="games-grid" id="adminGamesGrid"></div>
+</section>
+<section class="tab-content" id="tab-bookings">
+<h2 style="margin-bottom:20px;">Все бронирования</h2>
+<div class="bookings-table-wrapper">
+<table class="bookings-table">
+<thead>
+<tr>
+<th>Игра</th>
+<th>Консоль</th>
+<th>Клиент</th>
+<th>Телефон</th>
+<th>Дата</th>
+<th>Время</th>
+<th>Часов</th>
+<th>Статус</th>
+<th>Действия</th>
+</tr>
+</thead>
+<tbody id="adminBookingsBody"></tbody>
+</table>
+</div>
+</section>
+<section class="tab-content" id="tab-stats">
+<h2 style="margin-bottom:20px;">📊 Статистика</h2>
+<div class="stats-grid" id="statsGrid"></div>
+</section>
+</div>
+</div>
 <div class="modal" id="bookingModal">
-    <div class="modal-content">
-        <button class="close-btn" data-close="bookingModal">&times;</button>
-        <h2 id="bookingGameTitle">Бронирование</h2>
-        <div class="game-preview" id="bookingPreview"></div>
-        <form id="bookingForm">
-            <div class="form-group">
-                <label>Ваше имя</label>
-                <input type="text" id="userName" required placeholder="Иван Иванов">
-            </div>
-            <div class="form-group">
-                <label>Телефон</label>
-                <input type="tel" id="userPhone" required placeholder="+7 (999) 123-45-67">
-            </div>
-            <div class="form-group">
-                <label>Дата бронирования</label>
-                <input type="date" id="bookingDate" required>
-            </div>
-            <div class="form-group">
-                <label>Выберите время начала</label>
-                <div class="time-slots" id="timeSlots"></div>
-                <input type="hidden" id="selectedTime" required>
-            </div>
-            <div class="form-group">
-                <label>Длительность (часы)</label>
-                <select id="bookingDuration" required>
-                    <option value="1">1 час</option>
-                    <option value="2" selected>2 часа</option>
-                    <option value="3">3 часа</option>
-                    <option value="4">4 часа</option>
-                </select>
-            </div>
-            <button type="submit" class="btn-primary" id="submitBooking">Забронировать 🎯</button>
-        </form>
-    </div>
+<div class="modal-content">
+<button class="close-btn" data-close="bookingModal">&times;</button>
+<h2 id="bookingGameTitle">Бронирование</h2>
+<div class="game-preview" id="bookingPreview"></div>
+<form id="bookingForm">
+<div class="form-group">
+<label>Ваше имя</label>
+<input type="text" id="userName" required placeholder="Иван Иванов">
 </div>
-
+<div class="form-group">
+<label>Телефон</label>
+<input type="tel" id="userPhone" required placeholder="+7 (999) 123-45-67">
+</div>
+<div class="form-group">
+<label>Дата бронирования</label>
+<input type="date" id="bookingDate" required>
+</div>
+<div class="form-group">
+<label>Выберите время начала</label>
+<div class="time-slots" id="timeSlots">
+<div class="time-slot" data-time="13:00">13:00</div>
+<div class="time-slot" data-time="14:00">14:00</div>
+<div class="time-slot" data-time="15:00">15:00</div>
+<div class="time-slot" data-time="16:00">16:00</div>
+<div class="time-slot" data-time="17:00">17:00</div>
+<div class="time-slot" data-time="18:00">18:00</div>
+<div class="time-slot" data-time="19:00">19:00</div>
+<div class="time-slot" data-time="20:00">20:00</div>
+</div>
+<input type="hidden" id="selectedTime" required>
+</div>
+<div class="form-group">
+<label>Длительность</label>
+<input type="text" value="1 час" disabled style="opacity:0.7;cursor:not-allowed;">
+<small class="hint">Бронирование доступно только на 1 час</small>
+</div>
+<button type="submit" class="btn-primary">Забронировать 🎯</button>
+</form>
+</div>
+</div>
 <div class="modal" id="bookingsModal">
-    <div class="modal-content modal-large">
-        <button class="close-btn" data-close="bookingsModal">&times;</button>
-        <h2>📋 Мои бронирования</h2>
-        <div id="myBookingsList" class="bookings-list"></div>
-    </div>
+<div class="modal-content modal-large">
+<button class="close-btn" data-close="bookingsModal">&times;</button>
+<h2>📋 Мои бронирования</h2>
+<div id="myBookingsList" class="bookings-list"></div>
 </div>
-
+</div>
 <div class="modal" id="gameModal">
-    <div class="modal-content">
-        <button class="close-btn" data-close="gameModal">&times;</button>
-        <h2 id="gameModalTitle">Добавить игру</h2>
-        <form id="gameForm">
-            <input type="hidden" id="gameId">
-            <div class="form-group">
-                <label>Название игры</label>
-                <input type="text" id="gameTitle" required placeholder="God of War Ragnarök">
-            </div>
-            <div class="form-group">
-                <label>Консоль</label>
-                <select id="gameConsole" required>
-                    <option value="PS5">PlayStation 5</option>
-                    <option value="Xbox">Xbox</option>
-                    <option value="VR">VR</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Жанр</label>
-                <input type="text" id="gameGenre" required placeholder="Экшен, Приключения">
-            </div>
-            <div class="form-group">
-                <label>Описание</label>
-                <textarea id="gameDescription" rows="3" placeholder="Краткое описание игры..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>URL картинки</label>
-                <input type="url" id="gameImageUrl" placeholder="https://example.com/image.jpg">
-                <small class="hint">Вставьте ссылку на изображение</small>
-            </div>
-            <button type="submit" class="btn-primary" id="submitGame">Сохранить</button>
-        </form>
-    </div>
+<div class="modal-content">
+<button class="close-btn" data-close="gameModal">&times;</button>
+<h2 id="gameModalTitle">Добавить игру</h2>
+<form id="gameForm">
+<input type="hidden" id="gameId">
+<div class="form-group">
+<label>Название игры</label>
+<input type="text" id="gameTitle" required placeholder="God of War Ragnarök">
 </div>
-
+<div class="form-group">
+<label>Консоль</label>
+<select id="gameConsole" required>
+<option value="PS5">PlayStation 5</option>
+<option value="Xbox">Xbox</option>
+<option value="VR">VR</option>
+</select>
+</div>
+<div class="form-group">
+<label>Жанр</label>
+<input type="text" id="gameGenre" required placeholder="Экшен, Приключения">
+</div>
+<div class="form-group">
+<label>Описание</label>
+<textarea id="gameDescription" rows="3" placeholder="Краткое описание игры..."></textarea>
+</div>
+<div class="form-group">
+<label>URL картинки</label>
+<input type="url" id="gameImageUrl" placeholder="https://example.com/image.jpg">
+<small class="hint">Вставьте ссылку на изображение или загрузите файл ниже</small>
+</div>
+<div class="form-group">
+<label>Или загрузите картинку</label>
+<input type="file" id="gameImage" accept="image/*">
+<small class="hint">JPG/PNG до 2 МБ</small>
+<div id="imagePreview" class="image-preview"></div>
+</div>
+<button type="submit" class="btn-primary">Сохранить</button>
+</form>
+</div>
+</div>
 <div class="toast-container" id="toastContainer"></div>
-
-<div class="firebase-status" id="firebaseStatus">
-    <span class="status-dot" id="statusDot"></span>
-    <span id="statusText">Подключение к Firebase...</span>
-</div>
-
 <footer class="footer">
-    <p>© 2026 21GameZone — Играй. Бронируй. Побеждай. 🏆</p>
+<p>© 2026 21GameZone — Играй. Бронируй. Побеждай. 🏆</p>
 </footer>
-
-<!-- Firebase SDK -->
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import {
-    getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc
-} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
-// 🔥 ТВОЯ FIREBASE КОНФИГУРАЦИЯ
-const firebaseConfig = {
-    apiKey: "AIzaSyA831fias_I7c8Huokqjtj3dEO9sO9uOnc",
-    authDomain: "gamezone-abbab.firebaseapp.com",
-    projectId: "gamezone-abbab",
-    storageBucket: "gamezone-abbab.firebasestorage.app",
-    messagingSenderId: "430536623051",
-    appId: "1:430536623051:web:d8f7a2d115d1add797ac4e"
+<script>
+const STORAGE = {
+GAMES: 'gz_games',
+BOOKINGS: 'gz_bookings',
+AUTH: 'gz_auth',
+USER_ID: 'gz_user_id'
 };
-
-// Инициализация Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const GAMES_COLLECTION = 'games';
-const BOOKINGS_COLLECTION = 'bookings';
-
-// 60 ИГР ПО УМОЛЧАНИЮ
+const ADMIN_CREDENTIALS = { login: 'admin', password: 'admin123' };
+// Временные слоты
+const TIME_SLOTS = ['13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
+// 60 ИГР С КАРТИНКАМИ
 const DEFAULT_GAMES = [
-    // PS5 (20 игр)
-    { title: 'God of War Ragnarök', console: 'PS5', genre: 'Экшен, Приключения',
-      description: 'Эпическое продолжение саги о Кратосе и Атрее.',
-      image: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=600&h=400&fit=crop' },
-    { title: 'Spider-Man 2', console: 'PS5', genre: 'Экшен, Открытый мир',
-      description: 'Питер Паркер и Майлз Моралес против Венома.',
-      image: 'https://images.unsplash.com/photo-1635805737707-575885ab0820?w=600&h=400&fit=crop' },
-    { title: 'Horizon Forbidden West', console: 'PS5', genre: 'RPG, Приключения',
-      description: 'Элой исследует постапокалиптический мир.',
-      image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop' },
-    { title: 'The Last of Us Part I', console: 'PS5', genre: 'Экшен, Выживание',
-      description: 'Ремейк культовой истории о Джоэле и Элли.',
-      image: 'https://images.unsplash.com/photo-1552820728-8b83bb6b2b0a?w=600&h=400&fit=crop' },
-    { title: 'Gran Turismo 7', console: 'PS5', genre: 'Гонки, Симулятор',
-      description: 'Реалистичный автосимулятор с сотнями машин.',
-      image: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=600&h=400&fit=crop' },
-    { title: 'Ratchet & Clank: Rift Apart', console: 'PS5', genre: 'Платформер, Экшен',
-      description: 'Межгалактическое приключение с переходами.',
-      image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=400&fit=crop' },
-    { title: "Demon's Souls", console: 'PS5', genre: 'RPG, Souls-like',
-      description: 'Ремейк классики с невероятной графикой.',
-      image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop' },
-    { title: 'Returnal', console: 'PS5', genre: 'Шутер, Roguelike',
-      description: 'Научно-фантастический шутер с циклом времени.',
-      image: 'https://images.unsplash.com/photo-1612287230217-969b698cb8d1?w=600&h=400&fit=crop' },
-    { title: 'Sackboy: A Big Adventure', console: 'PS5', genre: 'Платформер, Кооператив',
-      description: 'Очаровательный 3D-платформер для семьи.',
-      image: 'https://images.unsplash.com/photo-1551103782-8ab07afd45c1?w=600&h=400&fit=crop' },
-    { title: 'Deathloop', console: 'PS5', genre: 'Шутер, Стелс',
-      description: 'Временная петля на острове с убийствами.',
-      image: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&h=400&fit=crop' },
-    { title: 'Kena: Bridge of Spirits', console: 'PS5', genre: 'Приключения, Экшен',
-      description: 'Красивое приключение с существами Рот.',
-      image: 'https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?w=600&h=400&fit=crop' },
-    { title: 'Resident Evil Village', console: 'PS5', genre: 'Хоррор, Выживание',
-      description: 'Итан Уинтерс против вампиров и монстров.',
-      image: 'https://images.unsplash.com/photo-1505322101000-19457dfad254?w=600&h=400&fit=crop' },
-    { title: 'Final Fantasy XVI', console: 'PS5', genre: 'RPG, Экшен',
-      description: 'Эпическая фэнтези-сага с Эйконами.',
-      image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&h=400&fit=crop' },
-    { title: 'Street Fighter 6', console: 'PS5', genre: 'Файтинг',
-      description: 'Новое поколение легендарного файтинга.',
-      image: 'https://images.unsplash.com/photo-1552820728-8b83bb6b2b0a?w=600&h=400&fit=crop' },
-    { title: 'Tekken 8', console: 'PS5', genre: 'Файтинг',
-      description: 'Мощный файтинг с невероятной графикой.',
-      image: 'https://images.unsplash.com/photo-1542751110-97427bbecf20?w=600&h=400&fit=crop' },
-    { title: "Baldur's Gate 3", console: 'PS5', genre: 'RPG, Стратегия',
-      description: 'Глубокая ролевая игра по D&D.',
-      image: 'https://images.unsplash.com/photo-1612287230217-969b698cb8d1?w=600&h=400&fit=crop' },
-    { title: 'Cyberpunk 2077', console: 'PS5', genre: 'RPG, Экшен',
-      description: 'Открытый мир Найт-Сити с киберимплантами.',
-      image: 'https://images.unsplash.com/photo-1535295972055-1c762f4483e5?w=600&h=400&fit=crop' },
-    { title: 'Elden Ring', console: 'PS5', genre: 'RPG, Souls-like',
-      description: 'Шедевр от FromSoftware с открытым миром.',
-      image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop' },
-    { title: 'Hogwarts Legacy', console: 'PS5', genre: 'RPG, Приключения',
-      description: 'Волшебный мир Хогвартса в XIX веке.',
-      image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&h=400&fit=crop' },
-    { title: "Marvel's Midnight Suns", console: 'PS5', genre: 'Стратегия, RPG',
-      description: 'Тактические бои с супергероями Marvel.',
-      image: 'https://images.unsplash.com/photo-1626278664285-f796b9e98f93?w=600&h=400&fit=crop' },
-
-    // XBOX (20 игр)
-    { title: 'Halo Infinite', console: 'Xbox', genre: 'Шутер, Sci-Fi',
-      description: 'Мастер Чиф возвращается на Зета-кольцо.',
-      image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=400&fit=crop' },
-    { title: 'Forza Horizon 5', console: 'Xbox', genre: 'Гонки, Открытый мир',
-      description: 'Фестиваль скорости в Мексике.',
-      image: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=600&h=400&fit=crop' },
-    { title: 'Starfield', console: 'Xbox', genre: 'RPG, Sci-Fi',
-      description: 'Космическая RPG от Bethesda.',
-      image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop' },
-    { title: 'Microsoft Flight Simulator', console: 'Xbox', genre: 'Симулятор',
-      description: 'Реалистичный симулятор полётов.',
-      image: 'https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=600&h=400&fit=crop' },
-    { title: 'Gears 5', console: 'Xbox', genre: 'Шутер, Экшен',
-      description: 'Эпическая сага о войне с саранчой.',
-      image: 'https://images.unsplash.com/photo-1552820728-8b83bb6b2b0a?w=600&h=400&fit=crop' },
-    { title: 'Sea of Thieves', console: 'Xbox', genre: 'Приключения, Кооператив',
-      description: 'Пиратское приключение с сражениями.',
-      image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=600&h=400&fit=crop' },
-    { title: 'Forza Motorsport', console: 'Xbox', genre: 'Гонки, Симулятор',
-      description: 'Реалистичные кольцевые гонки.',
-      image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&h=400&fit=crop' },
-    { title: 'Hi-Fi Rush', console: 'Xbox', genre: 'Экшен, Ритм-игра',
-      description: 'Стильный экшен в такт музыке.',
-      image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&h=400&fit=crop' },
-    { title: 'Pentiment', console: 'Xbox', genre: 'Приключения, Детектив',
-      description: 'Средневековый детектив с иллюстрациями.',
-      image: 'https://images.unsplash.com/photo-1535905557558-afc4877a26fc?w=600&h=400&fit=crop' },
-    { title: 'Grounded', console: 'Xbox', genre: 'Выживание, Кооператив',
-      description: 'Выживание в гигантском дворе.',
-      image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&h=400&fit=crop' },
-    { title: 'Psychonauts 2', console: 'Xbox', genre: 'Платформер, Приключения',
-      description: 'Путешествие в человеческое сознание.',
-      image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=400&fit=crop' },
-    { title: 'Redfall', console: 'Xbox', genre: 'Шутер, Кооператив',
-      description: 'Борьба с вампирами на острове.',
-      image: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&h=400&fit=crop' },
-    { title: 'Star Wars Jedi: Survivor', console: 'Xbox', genre: 'Экшен, Приключения',
-      description: 'Кэл Кестис продолжает приключение.',
-      image: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=600&h=400&fit=crop' },
-    { title: 'Diablo IV', console: 'Xbox', genre: 'RPG, Hack and slash',
-      description: 'Мрачное приключение в Санктуарии.',
-      image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop' },
-    { title: "Assassin's Creed Mirage", console: 'Xbox', genre: 'Экшен, Стелс',
-      description: 'Возвращение к истокам в Багдаде.',
-      image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop' },
-    { title: 'Mortal Kombat 1', console: 'Xbox', genre: 'Файтинг',
-      description: 'Перезапуск с жестокими фаталити.',
-      image: 'https://images.unsplash.com/photo-1542751110-97427bbecf20?w=600&h=400&fit=crop' },
-    { title: 'EA Sports FC 24', console: 'Xbox', genre: 'Спорт, Футбол',
-      description: 'Новое поколение футбольного симулятора.',
-      image: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&h=400&fit=crop' },
-    { title: 'Call of Duty: MW III', console: 'Xbox', genre: 'Шутер',
-      description: 'Продолжение современной войны.',
-      image: 'https://images.unsplash.com/photo-1552820728-8b83bb6b2b0a?w=600&h=400&fit=crop' },
-    { title: 'Alan Wake 2', console: 'Xbox', genre: 'Хоррор, Триллер',
-      description: 'Психологический хоррор с двумя героями.',
-      image: 'https://images.unsplash.com/photo-1505322101000-19457dfad254?w=600&h=400&fit=crop' },
-    { title: 'Lies of P', console: 'Xbox', genre: 'RPG, Souls-like',
-      description: 'Мрачная сказка о Пиноккио.',
-      image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&h=400&fit=crop' },
-
-    // VR (20 игр)
-    { title: 'Half-Life: Alyx', console: 'VR', genre: 'Шутер, VR',
-      description: 'Полноценный VR-шедевр от Valve.',
-      image: 'https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?w=600&h=400&fit=crop' },
-    { title: 'Beat Saber', console: 'VR', genre: 'Ритм-игра, VR',
-      description: 'Руби кубы в такт музыке!',
-      image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&h=400&fit=crop' },
-    { title: 'Superhot VR', console: 'VR', genre: 'Шутер, VR',
-      description: 'Время движется только когда двигаешься ты.',
-      image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=400&fit=crop' },
-    { title: 'Boneworks', console: 'VR', genre: 'Экшен, VR',
-      description: 'Физический шутер с реалистичной физикой.',
-      image: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=600&h=400&fit=crop' },
-    { title: 'The Walking Dead: Saints & Sinners', console: 'VR', genre: 'Хоррор, Выживание',
-      description: 'Выживание в зомби-апокалипсисе.',
-      image: 'https://images.unsplash.com/photo-1505322101000-19457dfad254?w=600&h=400&fit=crop' },
-    { title: 'Resident Evil 4 VR', console: 'VR', genre: 'Хоррор, VR',
-      description: 'Классический хоррор в VR.',
-      image: 'https://images.unsplash.com/photo-1612287230217-969b698cb8d1?w=600&h=400&fit=crop' },
-    { title: 'Blade & Sorcery', console: 'VR', genre: 'Экшен, VR',
-      description: 'Средневековые сражения с магией.',
-      image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop' },
-    { title: 'Pavlov VR', console: 'VR', genre: 'Шутер, Мультиплеер',
-      description: 'Тактический шутер в духе CS.',
-      image: 'https://images.unsplash.com/photo-1552820728-8b83bb6b2b0a?w=600&h=400&fit=crop' },
-    { title: 'Onward', console: 'VR', genre: 'Шутер, Симулятор',
-      description: 'Реалистичный военный шутер.',
-      image: 'https://images.unsplash.com/photo-1595590424283-b8f17842773f?w=600&h=400&fit=crop' },
-    { title: "Asgard's Wrath", console: 'VR', genre: 'RPG, VR',
-      description: 'Приключение в мире скандинавских богов.',
-      image: 'https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?w=600&h=400&fit=crop' },
-    { title: 'Lone Echo', console: 'VR', genre: 'Приключения, VR',
-      description: 'Научно-фантастическое приключение.',
-      image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop' },
-    { title: 'Star Wars: Squadrons', console: 'VR', genre: 'Космосимулятор, VR',
-      description: 'Космические бои на истребителях.',
-      image: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=600&h=400&fit=crop' },
-    { title: "No Man's Sky VR", console: 'VR', genre: 'Приключения, Космос',
-      description: 'Исследование бесконечной вселенной.',
-      image: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=600&h=400&fit=crop' },
-    { title: 'Skyrim VR', console: 'VR', genre: 'RPG, VR',
-      description: 'Легендарная RPG в VR.',
-      image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop' },
-    { title: 'Fallout 4 VR', console: 'VR', genre: 'RPG, Постапокалипсис',
-      description: 'Выживание в постапокалипсисе.',
-      image: 'https://images.unsplash.com/photo-1535295972055-1c762f4483e5?w=600&h=400&fit=crop' },
-    { title: 'Moss', console: 'VR', genre: 'Приключения, VR',
-      description: 'Очаровательное приключение мышонка.',
-      image: 'https://images.unsplash.com/photo-1551103782-8ab07afd45c1?w=600&h=400&fit=crop' },
-    { title: 'I Expect You To Die', console: 'VR', genre: 'Головоломка, VR',
-      description: 'Шпионские головоломки от первого лица.',
-      image: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&h=400&fit=crop' },
-    { title: 'Walkabout Mini Golf VR', console: 'VR', genre: 'Спорт, VR',
-      description: 'Мини-гольф с друзьями.',
-      image: 'https://images.unsplash.com/photo-1535535112387-56ffe8db21ff?w=600&h=400&fit=crop' },
-    { title: 'Synth Riders', console: 'VR', genre: 'Ритм-игра, VR',
-      description: 'Танцуй под синтвейв в неоновых мирах.',
-      image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&h=400&fit=crop' },
-    { title: 'Pistol Whip', console: 'VR', genre: 'Ритм-шутер, VR',
-      description: 'Стильный шутер под музыку.',
-      image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=400&fit=crop' }
+// PS5 (20 игр)
+{ id: 'ps5_1', title: 'God of War Ragnarök', console: 'PS5', genre: 'Экшен, Приключения',
+description: 'Эпическое продолжение саги о Кратосе и Атрее.',
+image: 'https://picsum.photos/seed/gow/400/300' },
+{ id: 'ps5_2', title: 'Spider-Man 2', console: 'PS5', genre: 'Экшен, Открытый мир',
+description: 'Питер Паркер и Майлз Моралес против Венома.',
+image: 'https://picsum.photos/seed/spiderman/400/300' },
+{ id: 'ps5_3', title: 'Horizon Forbidden West', console: 'PS5', genre: 'RPG, Приключения',
+description: 'Элой исследует постапокалиптический мир.',
+image: 'https://picsum.photos/seed/horizon/400/300' },
+{ id: 'ps5_4', title: 'The Last of Us Part I', console: 'PS5', genre: 'Экшен, Выживание',
+description: 'Ремейк культовой истории о Джоэле и Элли.',
+image: 'https://picsum.photos/seed/tlou/400/300' },
+{ id: 'ps5_5', title: 'Gran Turismo 7', console: 'PS5', genre: 'Гонки, Симулятор',
+description: 'Реалистичный автосимулятор с сотнями машин.',
+image: 'https://picsum.photos/seed/gt7/400/300' },
+{ id: 'ps5_6', title: 'Ratchet & Clank: Rift Apart', console: 'PS5', genre: 'Платформер, Экшен',
+description: 'Межгалактическое приключение с переходами.',
+image: 'https://picsum.photos/seed/ratchet/400/300' },
+{ id: 'ps5_7', title: 'Demon\'s Souls', console: 'PS5', genre: 'RPG, Souls-like',
+description: 'Ремейк классики с невероятной графикой.',
+image: 'https://picsum.photos/seed/demons/400/300' },
+{ id: 'ps5_8', title: 'Returnal', console: 'PS5', genre: 'Шутер, Roguelike',
+description: 'Научно-фантастический шутер с циклом времени.',
+image: 'https://picsum.photos/seed/returnal/400/300' },
+{ id: 'ps5_9', title: 'Sackboy: A Big Adventure', console: 'PS5', genre: 'Платформер, Кооператив',
+description: 'Очаровательный 3D-платформер для семьи.',
+image: 'https://picsum.photos/seed/sackboy/400/300' },
+{ id: 'ps5_10', title: 'Deathloop', console: 'PS5', genre: 'Шутер, Стелс',
+description: 'Временная петля на острове с убийствами.',
+image: 'https://picsum.photos/seed/deathloop/400/300' },
+{ id: 'ps5_11', title: 'Kena: Bridge of Spirits', console: 'PS5', genre: 'Приключения, Экшен',
+description: 'Красивое приключение с существами Рот.',
+image: 'https://picsum.photos/seed/kena/400/300' },
+{ id: 'ps5_12', title: 'Resident Evil Village', console: 'PS5', genre: 'Хоррор, Выживание',
+description: 'Итан Уинтерс против вампиров и монстров.',
+image: 'https://picsum.photos/seed/re8/400/300' },
+{ id: 'ps5_13', title: 'Final Fantasy XVI', console: 'PS5', genre: 'RPG, Экшен',
+description: 'Эпическая фэнтези-сага с Эйконами.',
+image: 'https://picsum.photos/seed/ff16/400/300' },
+{ id: 'ps5_14', title: 'Street Fighter 6', console: 'PS5', genre: 'Файтинг',
+description: 'Новое поколение легендарного файтинга.',
+image: 'https://picsum.photos/seed/sf6/400/300' },
+{ id: 'ps5_15', title: 'Tekken 8', console: 'PS5', genre: 'Файтинг',
+description: 'Мощный файтинг с невероятной графикой.',
+image: 'https://picsum.photos/seed/tekken/400/300' },
+{ id: 'ps5_16', title: 'Baldur\'s Gate 3', console: 'PS5', genre: 'RPG, Стратегия',
+description: 'Глубокая ролевая игра по D&D.',
+image: 'https://picsum.photos/seed/bg3/400/300' },
+{ id: 'ps5_17', title: 'Cyberpunk 2077', console: 'PS5', genre: 'RPG, Экшен',
+description: 'Открытый мир Найт-Сити с киберимплантами.',
+image: 'https://picsum.photos/seed/cyberpunk/400/300' },
+{ id: 'ps5_18', title: 'Elden Ring', console: 'PS5', genre: 'RPG, Souls-like',
+description: 'Шедевр от FromSoftware с открытым миром.',
+image: 'https://picsum.photos/seed/elden/400/300' },
+{ id: 'ps5_19', title: 'Hogwarts Legacy', console: 'PS5', genre: 'RPG, Приключения',
+description: 'Волшебный мир Хогвартса в XIX веке.',
+image: 'https://picsum.photos/seed/hogwarts/400/300' },
+{ id: 'ps5_20', title: 'Marvel\'s Midnight Suns', console: 'PS5', genre: 'Стратегия, RPG',
+description: 'Тактические бои с супергероями Marvel.',
+image: 'https://picsum.photos/seed/midnight/400/300' },
+// XBOX (20 игр)
+{ id: 'xb_1', title: 'Halo Infinite', console: 'Xbox', genre: 'Шутер, Sci-Fi',
+description: 'Мастер Чиф возвращается на Зета-кольцо.',
+image: 'https://picsum.photos/seed/halo/400/300' },
+{ id: 'xb_2', title: 'Forza Horizon 5', console: 'Xbox', genre: 'Гонки, Открытый мир',
+description: 'Фестиваль скорости в Мексике.',
+image: 'https://picsum.photos/seed/forza/400/300' },
+{ id: 'xb_3', title: 'Starfield', console: 'Xbox', genre: 'RPG, Sci-Fi',
+description: 'Космическая RPG от Bethesda.',
+image: 'https://picsum.photos/seed/starfield/400/300' },
+{ id: 'xb_4', title: 'Microsoft Flight Simulator', console: 'Xbox', genre: 'Симулятор',
+description: 'Реалистичный симулятор полётов.',
+image: 'https://picsum.photos/seed/flight/400/300' },
+{ id: 'xb_5', title: 'Gears 5', console: 'Xbox', genre: 'Шутер, Экшен',
+description: 'Эпическая сага о войне с саранчой.',
+image: 'https://picsum.photos/seed/gears/400/300' },
+{ id: 'xb_6', title: 'Sea of Thieves', console: 'Xbox', genre: 'Приключения, Кооператив',
+description: 'Пиратское приключение с сражениями.',
+image: 'https://picsum.photos/seed/thieves/400/300' },
+{ id: 'xb_7', title: 'Forza Motorsport', console: 'Xbox', genre: 'Гонки, Симулятор',
+description: 'Реалистичные кольцевые гонки.',
+image: 'https://picsum.photos/seed/motorsport/400/300' },
+{ id: 'xb_8', title: 'Hi-Fi Rush', console: 'Xbox', genre: 'Экшен, Ритм-игра',
+description: 'Стильный экшен в такт музыке.',
+image: 'https://picsum.photos/seed/hifirush/400/300' },
+{ id: 'xb_9', title: 'Pentiment', console: 'Xbox', genre: 'Приключения, Детектив',
+description: 'Средневековый детектив с иллюстрациями.',
+image: 'https://picsum.photos/seed/pentiment/400/300' },
+{ id: 'xb_10', title: 'Grounded', console: 'Xbox', genre: 'Выживание, Кооператив',
+description: 'Выживание в гигантском дворе.',
+image: 'https://picsum.photos/seed/grounded/400/300' },
+{ id: 'xb_11', title: 'Psychonauts 2', console: 'Xbox', genre: 'Платформер, Приключения',
+description: 'Путешествие в человеческое сознание.',
+image: 'https://picsum.photos/seed/psych/400/300' },
+{ id: 'xb_12', title: 'Redfall', console: 'Xbox', genre: 'Шутер, Кооператив',
+description: 'Борьба с вампирами на острове.',
+image: 'https://picsum.photos/seed/redfall/400/300' },
+{ id: 'xb_13', title: 'Star Wars Jedi: Survivor', console: 'Xbox', genre: 'Экшен, Приключения',
+description: 'Кэл Кестис продолжает приключение.',
+image: 'https://picsum.photos/seed/jedi/400/300' },
+{ id: 'xb_14', title: 'Diablo IV', console: 'Xbox', genre: 'RPG, Hack and slash',
+description: 'Мрачное приключение в Санктуарии.',
+image: 'https://picsum.photos/seed/diablo/400/300' },
+{ id: 'xb_15', title: 'Assassin\'s Creed Mirage', console: 'Xbox', genre: 'Экшен, Стелс',
+description: 'Возвращение к истокам в Багдаде.',
+image: 'https://picsum.photos/seed/acmirage/400/300' },
+{ id: 'xb_16', title: 'Mortal Kombat 1', console: 'Xbox', genre: 'Файтинг',
+description: 'Перезапуск с жестокими фаталити.',
+image: 'https://picsum.photos/seed/mk1/400/300' },
+{ id: 'xb_17', title: 'EA Sports FC 24', console: 'Xbox', genre: 'Спорт, Футбол',
+description: 'Новое поколение футбольного симулятора.',
+image: 'https://picsum.photos/seed/fc24/400/300' },
+{ id: 'xb_18', title: 'Call of Duty: MW III', console: 'Xbox', genre: 'Шутер',
+description: 'Продолжение современной войны.',
+image: 'https://picsum.photos/seed/cod/400/300' },
+{ id: 'xb_19', title: 'Alan Wake 2', console: 'Xbox', genre: 'Хоррор, Триллер',
+description: 'Психологический хоррор с двумя героями.',
+image: 'https://picsum.photos/seed/alanwake/400/300' },
+{ id: 'xb_20', title: 'Lies of P', console: 'Xbox', genre: 'RPG, Souls-like',
+description: 'Мрачная сказка о Пиноккио.',
+image: 'https://picsum.photos/seed/liesofp/400/300' },
+// VR (20 игр)
+{ id: 'vr_1', title: 'Half-Life: Alyx', console: 'VR', genre: 'Шутер, VR',
+description: 'Полноценный VR-шедевр от Valve.',
+image: 'https://picsum.photos/seed/alyx/400/300' },
+{ id: 'vr_2', title: 'Beat Saber', console: 'VR', genre: 'Ритм-игра, VR',
+description: 'Руби кубы в такт музыке!',
+image: 'https://picsum.photos/seed/beatsaber/400/300' },
+{ id: 'vr_3', title: 'Superhot VR', console: 'VR', genre: 'Шутер, VR',
+description: 'Время движется только когда двигаешься ты.',
+image: 'https://picsum.photos/seed/superhot/400/300' },
+{ id: 'vr_4', title: 'Boneworks', console: 'VR', genre: 'Экшен, VR',
+description: 'Физический шутер с реалистичной физикой.',
+image: 'https://picsum.photos/seed/boneworks/400/300' },
+{ id: 'vr_5', title: 'The Walking Dead: Saints & Sinners', console: 'VR', genre: 'Хоррор, Выживание',
+description: 'Выживание в зомби-апокалипсисе.',
+image: 'https://picsum.photos/seed/walkingdead/400/300' },
+{ id: 'vr_6', title: 'Resident Evil 4 VR', console: 'VR', genre: 'Хоррор, VR',
+description: 'Классический хоррор в VR.',
+image: 'https://picsum.photos/seed/re4vr/400/300' },
+{ id: 'vr_7', title: 'Blade & Sorcery', console: 'VR', genre: 'Экшен, VR',
+description: 'Средневековые сражения с магией.',
+image: 'https://picsum.photos/seed/bladesorc/400/300' },
+{ id: 'vr_8', title: 'Pavlov VR', console: 'VR', genre: 'Шутер, Мультиплеер',
+description: 'Тактический шутер в духе CS.',
+image: 'https://picsum.photos/seed/pavlov/400/300' },
+{ id: 'vr_9', title: 'Onward', console: 'VR', genre: 'Шутер, Симулятор',
+description: 'Реалистичный военный шутер.',
+image: 'https://picsum.photos/seed/onward/400/300' },
+{ id: 'vr_10', title: 'Asgard\'s Wrath', console: 'VR', genre: 'RPG, VR',
+description: 'Приключение в мире скандинавских богов.',
+image: 'https://picsum.photos/seed/asgard/400/300' },
+{ id: 'vr_11', title: 'Lone Echo', console: 'VR', genre: 'Приключения, VR',
+description: 'Научно-фантастическое приключение.',
+image: 'https://picsum.photos/seed/loneecho/400/300' },
+{ id: 'vr_12', title: 'Star Wars: Squadrons', console: 'VR', genre: 'Космосимулятор, VR',
+description: 'Космические бои на истребителях.',
+image: 'https://picsum.photos/seed/squadrons/400/300' },
+{ id: 'vr_13', title: 'No Man\'s Sky VR', console: 'VR', genre: 'Приключения, Космос',
+description: 'Исследование бесконечной вселенной.',
+image: 'https://picsum.photos/seed/nomanssky/400/300' },
+{ id: 'vr_14', title: 'Skyrim VR', console: 'VR', genre: 'RPG, VR',
+description: 'Легендарная RPG в VR.',
+image: 'https://picsum.photos/seed/skyrim/400/300' },
+{ id: 'vr_15', title: 'Fallout 4 VR', console: 'VR', genre: 'RPG, Постапокалипсис',
+description: 'Выживание в постапокалипсисе.',
+image: 'https://picsum.photos/seed/fallout/400/300' },
+{ id: 'vr_16', title: 'Moss', console: 'VR', genre: 'Приключения, VR',
+description: 'Очаровательное приключение мышонка.',
+image: 'https://picsum.photos/seed/moss/400/300' },
+{ id: 'vr_17', title: 'I Expect You To Die', console: 'VR', genre: 'Головоломка, VR',
+description: 'Шпионские головоломки от первого лица.',
+image: 'https://picsum.photos/seed/expectyoutodie/400/300' },
+{ id: 'vr_18', title: 'Walkabout Mini Golf VR', console: 'VR', genre: 'Спорт, VR',
+description: 'Мини-гольф с друзьями.',
+image: 'https://picsum.photos/seed/minigolf/400/300' },
+{ id: 'vr_19', title: 'Synth Riders', console: 'VR', genre: 'Ритм-игра, VR',
+description: 'Танцуй под синтвейв в неоновых мирах.',
+image: 'https://picsum.photos/seed/synthriders/400/300' },
+{ id: 'vr_20', title: 'Pistol Whip', console: 'VR', genre: 'Ритм-шутер, VR',
+description: 'Стильный шутер под музыку.',
+image: 'https://picsum.photos/seed/pistolwhip/400/300' }
 ];
-
-// Утилиты
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
-
+function loadData(key, fallback) {
+try {
+const data = localStorage.getItem(key);
+return data ? JSON.parse(data) : fallback;
+} catch { return fallback; }
+}
+function saveData(key, data) {
+localStorage.setItem(key, JSON.stringify(data));
+}
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
-
 function toast(message, type = 'success') {
-    const container = $('#toastContainer');
-    const el = document.createElement('div');
-    el.className = `toast ${type}`;
-    el.textContent = message;
-    container.appendChild(el);
-    setTimeout(() => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateX(100px)';
-        el.style.transition = 'all 0.3s';
-        setTimeout(() => el.remove(), 300);
-    }, 3000);
+const container = $('#toastContainer');
+const el = document.createElement('div');
+el.className = `toast ${type}`;
+el.textContent = message;
+container.appendChild(el);
+setTimeout(() => {
+el.style.opacity = '0';
+el.style.transform = 'translateX(100px)';
+el.style.transition = 'all 0.3s';
+setTimeout(() => el.remove(), 300);
+}, 3000);
 }
-
-function setFirebaseStatus(text, isError = false) {
-    $('#statusText').textContent = text;
-    const dot = $('#statusDot');
-    if (isError) dot.classList.add('error');
-    else dot.classList.remove('error');
-}
-
 function getUserId() {
-    let id = localStorage.getItem('gz_user_id');
-    if (!id) {
-        id = uid();
-        localStorage.setItem('gz_user_id', id);
-    }
-    return id;
+let id = localStorage.getItem(STORAGE.USER_ID);
+if (!id) {
+id = uid();
+localStorage.setItem(STORAGE.USER_ID, id);
 }
-
-function formatDate(dateStr) {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' });
+return id;
 }
-
-// Глобальные переменные
-let games = [];
-let bookings = [];
+// Загрузка данных с проверкой количества игр
+let games = loadData(STORAGE.GAMES, []);
+let bookings = loadData(STORAGE.BOOKINGS, []);
+// Если игр меньше 60 или их нет вообще - загружаем дефолтные
+if (!games || games.length < 60) {
+games = [...DEFAULT_GAMES];
+saveGames();
+console.log('✅ Загружено 60 игр по умолчанию');
+}
 let currentFilter = 'all';
 let currentBookingGameId = null;
+let currentImageBase64 = null;
 let selectedTimeSlot = null;
-const TIME_SLOTS = ['13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
-
-// ===== FIREBASE ФУНКЦИИ =====
-
-async function loadGames() {
-    try {
-        setFirebaseStatus('Загрузка игр...');
-        const snapshot = await getDocs(collection(db, GAMES_COLLECTION));
-        games = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        console.log(`✅ Загружено ${games.length} игр из Firebase`);
-        setFirebaseStatus(`Firebase ✓ Игр: ${games.length}`);
-        renderClientGames();
-        renderAdminGames();
-    } catch (error) {
-        console.error('Ошибка загрузки игр:', error);
-        setFirebaseStatus('Ошибка Firebase', true);
-        toast('Ошибка загрузки игр: ' + error.message, 'error');
-    }
+function saveGames() {
+saveData(STORAGE.GAMES, games);
+$('#gamesCount').textContent = games.length;
 }
-
-async function loadBookings() {
-    try {
-        const snapshot = await getDocs(collection(db, BOOKINGS_COLLECTION));
-        bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        console.log(`✅ Загружено ${bookings.length} бронирований`);
-        renderAdminBookings();
-        renderMyBookings();
-    } catch (error) {
-        console.error('Ошибка загрузки бронирований:', error);
-    }
-}
-
-async function addGameToFirebase(gameData) {
-    try {
-        const docRef = await addDoc(collection(db, GAMES_COLLECTION), gameData);
-        toast('Игра добавлена!', 'success');
-        await loadGames();
-        return docRef.id;
-    } catch (error) {
-        console.error('Ошибка добавления игры:', error);
-        toast('Ошибка: ' + error.message, 'error');
-        throw error;
-    }
-}
-
-async function updateGameInFirebase(id, gameData) {
-    try {
-        await updateDoc(doc(db, GAMES_COLLECTION, id), gameData);
-        toast('Игра обновлена', 'success');
-        await loadGames();
-    } catch (error) {
-        console.error('Ошибка обновления игры:', error);
-        toast('Ошибка: ' + error.message, 'error');
-    }
-}
-
-async function deleteGameFromFirebase(id) {
-    const game = games.find(g => g.id === id);
-    if (!game) return;
-    if (!confirm(`Удалить игру "${game.title}"?`)) return;
-    try {
-        await deleteDoc(doc(db, GAMES_COLLECTION, id));
-        toast('Игра удалена', 'warning');
-        await loadGames();
-    } catch (error) {
-        console.error('Ошибка удаления игры:', error);
-        toast('Ошибка: ' + error.message, 'error');
-    }
-}
-
-async function addBookingToFirebase(bookingData) {
-    try {
-        const docRef = await addDoc(collection(db, BOOKINGS_COLLECTION), bookingData);
-        toast(`Бронь создана! ${bookingData.gameTitle} — ${bookingData.date} в ${bookingData.time}`, 'success');
-        await loadBookings();
-        return docRef.id;
-    } catch (error) {
-        console.error('Ошибка создания брони:', error);
-        toast('Ошибка: ' + error.message, 'error');
-        throw error;
-    }
-}
-
-async function cancelBookingInFirebase(id) {
-    if (!confirm('Отменить бронирование?')) return;
-    try {
-        await updateDoc(doc(db, BOOKINGS_COLLECTION, id), { status: 'cancelled' });
-        toast('Бронирование отменено', 'warning');
-        await loadBookings();
-    } catch (error) {
-        console.error('Ошибка отмены брони:', error);
-        toast('Ошибка: ' + error.message, 'error');
-    }
-}
-
-async function loadDefaultGames() {
-    if (!confirm('⚠️ Загрузить 60 стандартных игр в Firebase?')) return;
-
-    try {
-        setFirebaseStatus('Загрузка 60 игр...');
-        let count = 0;
-        for (const game of DEFAULT_GAMES) {
-            await addDoc(collection(db, GAMES_COLLECTION), {
-                ...game,
-                createdAt: new Date().toISOString()
-            });
-            count++;
-            setFirebaseStatus(`Загружено ${count}/60...`);
-        }
-        toast(`✅ Загружено ${count} игр в Firebase!`, 'success');
-        await loadGames();
-    } catch (error) {
-        console.error('Ошибка загрузки игр:', error);
-        setFirebaseStatus('Ошибка Firebase', true);
-        toast('Ошибка: ' + error.message, 'error');
-    }
-}
-
-// ===== РЕНДЕРИНГ =====
-
+function saveBookings() { saveData(STORAGE.BOOKINGS, bookings); }
 function renderGameCard(game, isAdmin = false) {
-    const card = document.createElement('div');
-    card.className = 'game-card';
-
-    const fallbackImg = 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop';
-
-    card.innerHTML = `
-        <div class="game-image">
-            <span class="free-badge">Бесплатно</span>
-            <span class="console-badge ${game.console}">${game.console}</span>
-            <img src="${game.image || fallbackImg}"
-                 alt="${game.title}"
-                 onerror="this.src='${fallbackImg}'">
-        </div>
-        <div class="game-info">
-            <div class="game-title">${game.title}</div>
-            <div class="game-genre">${game.genre}</div>
-            <div class="game-description">${game.description || ''}</div>
-            <div class="game-footer">
-                ${isAdmin ? '' : `<button class="btn-book" data-id="${game.id}">Забронировать</button>`}
-            </div>
-        </div>
-        ${isAdmin ? `
-            <div class="admin-game-actions">
-                <button class="btn-small btn-edit" data-edit="${game.id}">✏️ Изменить</button>
-                <button class="btn-small btn-delete" data-delete="${game.id}">🗑 Удалить</button>
-            </div>` : ''}
-    `;
-    return card;
+const card = document.createElement('div');
+card.className = 'game-card';
+const imageHtml = game.image
+? `<img src="${game.image}" alt="${game.title}" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\\'font-size:80px;\\'>🎮</span>'">`
+: `<span style="font-size:80px;">🎮</span>`;
+card.innerHTML = `
+<div class="game-image">
+<span class="free-badge"> Бесплатно</span>
+<span class="console-badge ${game.console}">${game.console}</span>
+${imageHtml}
+</div>
+<div class="game-info">
+<div class="game-title">${game.title}</div>
+<div class="game-genre">${game.genre}</div>
+<div class="game-description">${game.description || ''}</div>
+<div class="game-footer">
+${isAdmin
+? ''
+: `<button class="btn-book" data-id="${game.id}">Забронировать</button>`}
+</div>
+</div>
+${isAdmin ? `
+<div class="admin-game-actions">
+<button class="btn-small btn-edit" data-edit="${game.id}">✏️ Изменить</button>
+<button class="btn-small btn-delete" data-delete="${game.id}">🗑 Удалить</button>
+</div>` : ''}
+`;
+return card;
 }
-
 function renderClientGames() {
-    const grid = $('#gamesGrid');
-    grid.innerHTML = '';
-
-    const filtered = currentFilter === 'all'
-        ? games
-        : games.filter(g => g.console === currentFilter);
-
-    if (filtered.length === 0) {
-        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:40px;">Нет игр 😔<br><small>Админ может нажать "Загрузить 60 игр"</small></p>';
-        return;
-    }
-
-    filtered.forEach(game => {
-        const card = renderGameCard(game, false);
-        grid.appendChild(card);
-    });
-
-    grid.querySelectorAll('.btn-book').forEach(btn => {
-        btn.addEventListener('click', () => openBookingModal(btn.dataset.id));
-    });
+const grid = $('#gamesGrid');
+grid.innerHTML = '';
+const filtered = currentFilter === 'all'
+? games
+: games.filter(g => g.console === currentFilter);
+if (filtered.length === 0) {
+grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:40px;">Нет игр в этой категории 😔</p>';
+return;
 }
-
+filtered.forEach(game => {
+const card = renderGameCard(game, false);
+grid.appendChild(card);
+});
+grid.querySelectorAll('.btn-book').forEach(btn => {
+btn.addEventListener('click', (e) => {
+e.stopPropagation();
+openBookingModal(btn.dataset.id);
+});
+});
+}
 function renderAdminGames() {
-    const grid = $('#adminGamesGrid');
-    grid.innerHTML = '';
-    $('#gamesCount').textContent = games.length;
-
-    if (games.length === 0) {
-        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:40px;">Нет игр. Нажмите "Загрузить 60 игр"</p>';
-        return;
-    }
-
-    games.forEach(game => {
-        const card = renderGameCard(game, true);
-        grid.appendChild(card);
-    });
-
-    grid.querySelectorAll('[data-edit]').forEach(btn => {
-        btn.addEventListener('click', () => openGameModal(btn.dataset.edit));
-    });
-    grid.querySelectorAll('[data-delete]').forEach(btn => {
-        btn.addEventListener('click', () => deleteGameFromFirebase(btn.dataset.delete));
-    });
+const grid = $('#adminGamesGrid');
+grid.innerHTML = '';
+$('#gamesCount').textContent = games.length;
+if (games.length === 0) {
+grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:40px;">Нет игр. Добавьте первую!</p>';
+return;
 }
-
-function renderTimeSlots(date) {
-    const slotsContainer = $('#timeSlots');
-    slotsContainer.innerHTML = '';
-
-    TIME_SLOTS.forEach(time => {
-        const slot = document.createElement('div');
-        slot.className = 'time-slot';
-        slot.textContent = time;
-        slot.dataset.time = time;
-
-        const isBooked = bookings.some(b =>
-            b.date === date &&
-            b.time === time &&
-            b.status === 'active'
-        );
-
-        if (isBooked) {
-            slot.classList.add('disabled');
-        } else {
-            slot.addEventListener('click', () => selectTimeSlot(slot, time));
-        }
-
-        slotsContainer.appendChild(slot);
-    });
+games.forEach(game => {
+const card = renderGameCard(game, true);
+grid.appendChild(card);
+});
+grid.querySelectorAll('[data-edit]').forEach(btn => {
+btn.addEventListener('click', () => openGameModal(btn.dataset.edit));
+});
+grid.querySelectorAll('[data-delete]').forEach(btn => {
+btn.addEventListener('click', () => deleteGame(btn.dataset.delete));
+});
 }
-
-function selectTimeSlot(element, time) {
-    $$('.time-slot').forEach(s => s.classList.remove('selected'));
-    element.classList.add('selected');
-    selectedTimeSlot = time;
-    $('#selectedTime').value = time;
-}
-
 function openBookingModal(gameId) {
-    const game = games.find(g => g.id === gameId);
-    if (!game) return;
-
-    currentBookingGameId = gameId;
-    selectedTimeSlot = null;
-
-    $('#bookingGameTitle').textContent = `Бронирование: ${game.title}`;
-    const preview = $('#bookingPreview');
-    const fallbackImg = 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop';
-    preview.innerHTML = `
-        <img src="${game.image || fallbackImg}" alt="${game.title}">
-        <div>
-            <strong>${game.title}</strong><br>
-            <small>${game.console} • <span style="color:var(--success);font-weight:700;">БЕСПЛАТНО</span></small>
-        </div>
-    `;
-
-    const today = new Date().toISOString().split('T')[0];
-    $('#bookingDate').min = today;
-    $('#bookingDate').value = today;
-    $('#selectedTime').value = '';
-
-    renderTimeSlots(today);
-    $('#bookingModal').classList.add('active');
+const game = games.find(g => g.id === gameId);
+if (!game) return;
+currentBookingGameId = gameId;
+selectedTimeSlot = null;
+$('#bookingGameTitle').textContent = `Бронирование: ${game.title}`;
+const preview = $('#bookingPreview');
+const imgHtml = game.image
+? `<img src="${game.image}" alt="${game.title}">`
+: `<div style="font-size:50px;">🎮</div>`;
+preview.innerHTML = `${imgHtml}<div><strong>${game.title}</strong><br><small>${game.console} • <span style="color:var(--success);font-weight:700;">БЕСПЛАТНО</span></small></div>`;
+const today = new Date().toISOString().split('T')[0];
+$('#bookingDate').min = today;
+$('#bookingDate').value = today;
+$('#selectedTime').value = '';
+// Сброс временных слотов
+renderTimeSlots(today);
+$('#bookingModal').classList.add('active');
 }
-
+function renderTimeSlots(date) {
+const slotsContainer = $('#timeSlots');
+slotsContainer.innerHTML = '';
+TIME_SLOTS.forEach(time => {
+const slot = document.createElement('div');
+slot.className = 'time-slot';
+slot.textContent = time;
+slot.dataset.time = time;
+// Проверяем, занята ли эта дата и время
+const isBooked = bookings.some(b =>
+b.date === date &&
+b.time === time &&
+b.status === 'active'
+);
+if (isBooked) {
+slot.classList.add('disabled');
+} else {
+slot.addEventListener('click', () => selectTimeSlot(slot, time));
+}
+slotsContainer.appendChild(slot);
+});
+}
+function selectTimeSlot(element, time) {
+$$('.time-slot').forEach(s => s.classList.remove('selected'));
+element.classList.add('selected');
+selectedTimeSlot = time;
+$('#selectedTime').value = time;
+}
 $('#bookingDate').addEventListener('change', (e) => {
-    if (e.target.value) {
-        renderTimeSlots(e.target.value);
-        selectedTimeSlot = null;
-        $('#selectedTime').value = '';
-    }
+if (e.target.value) {
+renderTimeSlots(e.target.value);
+selectedTimeSlot = null;
+$('#selectedTime').value = '';
+}
 });
-
-$('#bookingForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    if (!selectedTimeSlot) {
-        toast('Пожалуйста, выберите время', 'error');
-        return;
-    }
-
-    const game = games.find(g => g.id === currentBookingGameId);
-    if (!game) return;
-
-    const btn = $('#submitBooking');
-    const originalText = btn.textContent;
-    btn.disabled = true;
-    btn.innerHTML = '<span class="loading"></span> Сохранение...';
-
-    const booking = {
-        gameId: game.id,
-        gameTitle: game.title,
-        console: game.console,
-        userName: $('#userName').value.trim(),
-        userPhone: $('#userPhone').value.trim(),
-        date: $('#bookingDate').value,
-        time: selectedTimeSlot,
-        duration: parseInt($('#bookingDuration').value),
-        userId: getUserId(),
-        status: 'active',
-        createdAt: new Date().toISOString()
-    };
-
-    try {
-        await addBookingToFirebase(booking);
-        $('#bookingModal').classList.remove('active');
-        $('#bookingForm').reset();
-    } catch (error) {
-        console.error(error);
-    } finally {
-        btn.disabled = false;
-        btn.textContent = originalText;
-    }
+$('#bookingForm').addEventListener('submit', (e) => {
+e.preventDefault();
+if (!selectedTimeSlot) {
+toast('Пожалуйста, выберите время', 'error');
+return;
+}
+const game = games.find(g => g.id === currentBookingGameId);
+if (!game) return;
+const booking = {
+id: uid(),
+gameId: game.id,
+gameTitle: game.title,
+console: game.console,
+userName: $('#userName').value.trim(),
+userPhone: $('#userPhone').value.trim(),
+date: $('#bookingDate').value,
+time: selectedTimeSlot,
+duration: 1,
+userId: getUserId(),
+status: 'active',
+createdAt: new Date().toISOString()
+};
+bookings.push(booking);
+saveBookings();
+$('#bookingModal').classList.remove('active');
+$('#bookingForm').reset();
+toast(`Бронь создана! ${game.title} — ${booking.date} в ${booking.time}`, 'success');
 });
-
 function renderMyBookings() {
-    const list = $('#myBookingsList');
-    const userId = getUserId();
-    const my = bookings.filter(b => b.userId === userId).sort((a, b) =>
-        new Date(b.createdAt) - new Date(a.createdAt)
-    );
-
-    if (my.length === 0) {
-        list.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:30px;">У вас пока нет бронирований</p>';
-        return;
-    }
-
-    list.innerHTML = '';
-    my.forEach(b => {
-        const item = document.createElement('div');
-        item.className = `booking-item ${b.status === 'cancelled' ? 'cancelled' : ''}`;
-        item.innerHTML = `
-            <div class="booking-info">
-                <h4>${b.gameTitle} <span class="console-badge ${b.console}" style="font-size:10px;padding:2px 8px;">${b.console}</span></h4>
-                <p>📅 ${formatDate(b.date)} в ${b.time} • ${b.duration} ч.</p>
-                <p>Статус: <span class="status-badge ${b.status === 'active' ? 'status-active' : 'status-cancelled'}">${b.status === 'active' ? 'Активна' : 'Отменена'}</span></p>
-            </div>
-            ${b.status === 'active' ? `<button class="btn-small btn-cancel" data-cancel="${b.id}">❌ Отменить</button>` : ''}
-        `;
-        list.appendChild(item);
-    });
-
-    list.querySelectorAll('[data-cancel]').forEach(btn => {
-        btn.addEventListener('click', () => cancelBookingInFirebase(btn.dataset.cancel));
-    });
+const list = $('#myBookingsList');
+const userId = getUserId();
+const my = bookings.filter(b => b.userId === userId).sort((a, b) =>
+new Date(b.createdAt) - new Date(a.createdAt)
+);
+if (my.length === 0) {
+list.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:30px;">У вас пока нет бронирований</p>';
+return;
 }
-
+list.innerHTML = '';
+my.forEach(b => {
+const item = document.createElement('div');
+item.className = `booking-item ${b.status === 'cancelled' ? 'cancelled' : ''}`;
+item.innerHTML = `
+<div class="booking-info">
+<h4>${b.gameTitle} <span class="console-badge ${b.console}" style="font-size:10px;padding:2px 8px;position:static;display:inline-block;vertical-align:middle;">${b.console}</span></h4>
+<p>📅 ${formatDate(b.date)} в ${b.time} • ${b.duration} ч.</p>
+<p>Статус: <span class="status-badge ${b.status === 'active' ? 'status-active' : 'status-cancelled'}">${b.status === 'active' ? 'Активна' : 'Отменена'}</span></p>
+</div>
+${b.status === 'active' ? `<button class="btn-small btn-cancel" data-cancel="${b.id}">❌ Отменить</button>` : ''}
+`;
+list.appendChild(item);
+});
+list.querySelectorAll('[data-cancel]').forEach(btn => {
+btn.addEventListener('click', () => cancelBooking(btn.dataset.cancel, true));
+});
+}
+function cancelBooking(id, isClient = false) {
+if (!confirm('Отменить бронирование?')) return;
+const b = bookings.find(x => x.id === id);
+if (!b) return;
+b.status = 'cancelled';
+saveBookings();
+toast('Бронирование отменено', 'warning');
+renderMyBookings();
+if (!isClient) renderAdminBookings();
+}
+function formatDate(dateStr) {
+const d = new Date(dateStr);
+return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' });
+}
 function renderAdminBookings() {
-    const tbody = $('#adminBookingsBody');
-    const sorted = [...bookings].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-    if (sorted.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-dim);padding:30px;">Бронирований пока нет</td></tr>';
-        return;
-    }
-
-    tbody.innerHTML = sorted.map(b => `
-        <tr class="${b.status === 'cancelled' ? 'cancelled' : ''}">
-            <td><strong>${b.gameTitle}</strong></td>
-            <td><span class="console-badge ${b.console}" style="position:static;">${b.console}</span></td>
-            <td>${b.userName}</td>
-            <td>${b.userPhone}</td>
-            <td>${formatDate(b.date)}</td>
-            <td>${b.time}</td>
-            <td>${b.duration} ч.</td>
-            <td><span class="status-badge ${b.status === 'active' ? 'status-active' : 'status-cancelled'}">${b.status === 'active' ? 'Активна' : 'Отменена'}</span></td>
-            <td>
-                ${b.status === 'active' ? `<button class="btn-small btn-cancel" data-admin-cancel="${b.id}">❌ Отменить</button>` : '—'}
-            </td>
-        </tr>
-    `).join('');
-
-    tbody.querySelectorAll('[data-admin-cancel]').forEach(btn => {
-        btn.addEventListener('click', () => cancelBookingInFirebase(btn.dataset.adminCancel));
-    });
+const tbody = $('#adminBookingsBody');
+const sorted = [...bookings].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+if (sorted.length === 0) {
+tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-dim);padding:30px;">Бронирований пока нет</td></tr>';
+return;
 }
-
+tbody.innerHTML = sorted.map(b => `
+<tr class="${b.status === 'cancelled' ? 'cancelled' : ''}">
+<td><strong>${b.gameTitle}</strong></td>
+<td><span class="console-badge ${b.console}" style="position:static;">${b.console}</span></td>
+<td>${b.userName}</td>
+<td>${b.userPhone}</td>
+<td>${formatDate(b.date)}</td>
+<td>${b.time}</td>
+<td>${b.duration} ч.</td>
+<td><span class="status-badge ${b.status === 'active' ? 'status-active' : 'status-cancelled'}">${b.status === 'active' ? 'Активна' : 'Отменена'}</span></td>
+<td>
+${b.status === 'active'
+? `<button class="btn-small btn-cancel" data-admin-cancel="${b.id}">❌ Отменить</button>`
+: '—'}
+</td>
+</tr>
+`).join('');
+tbody.querySelectorAll('[data-admin-cancel]').forEach(btn => {
+btn.addEventListener('click', () => cancelBooking(btn.dataset.adminCancel, false));
+});
+}
 function renderStats() {
-    const total = bookings.length;
-    const active = bookings.filter(b => b.status === 'active').length;
-    const cancelled = bookings.filter(b => b.status === 'cancelled').length;
-
-    const byConsole = { PS5: 0, Xbox: 0, VR: 0 };
-    bookings.filter(b => b.status === 'active').forEach(b => byConsole[b.console]++);
-
-    $('#statsGrid').innerHTML = `
-        <div class="stat-card"><div class="stat-icon">🎮</div><div class="stat-value">${games.length}</div><div class="stat-label">Всего игр</div></div>
-        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-value">${total}</div><div class="stat-label">Всего броней</div></div>
-        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value">${active}</div><div class="stat-label">Активных</div></div>
-        <div class="stat-card"><div class="stat-icon">❌</div><div class="stat-value">${cancelled}</div><div class="stat-label">Отменённых</div></div>
-        <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-value">${byConsole.PS5}</div><div class="stat-label">PS5</div></div>
-        <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-value">${byConsole.Xbox}</div><div class="stat-label">Xbox</div></div>
-        <div class="stat-card"><div class="stat-icon">🥽</div><div class="stat-value">${byConsole.VR}</div><div class="stat-label">VR</div></div>
-    `;
+const total = bookings.length;
+const active = bookings.filter(b => b.status === 'active').length;
+const cancelled = bookings.filter(b => b.status === 'cancelled').length;
+const byConsole = { PS5: 0, Xbox: 0, VR: 0 };
+bookings.filter(b => b.status === 'active').forEach(b => byConsole[b.console]++);
+$('#statsGrid').innerHTML = `
+<div class="stat-card"><div class="stat-icon">🎮</div><div class="stat-value">${games.length}</div><div class="stat-label">Всего игр</div></div>
+<div class="stat-card"><div class="stat-icon">📋</div><div class="stat-value">${total}</div><div class="stat-label">Всего броней</div></div>
+<div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value">${active}</div><div class="stat-label">Активных</div></div>
+<div class="stat-card"><div class="stat-icon">❌</div><div class="stat-value">${cancelled}</div><div class="stat-label">Отменённых</div></div>
+<div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-value">${byConsole.PS5}</div><div class="stat-label">PS5 броней</div></div>
+<div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-value">${byConsole.Xbox}</div><div class="stat-label">Xbox броней</div></div>
+<div class="stat-card"><div class="stat-icon">🥽</div><div class="stat-value">${byConsole.VR}</div><div class="stat-label">VR броней</div></div>
+`;
 }
-
-// Админка: добавление/редактирование игры
 function openGameModal(gameId = null) {
-    const form = $('#gameForm');
-    form.reset();
-
-    if (gameId) {
-        const game = games.find(g => g.id === gameId);
-        if (!game) return;
-        $('#gameModalTitle').textContent = 'Редактировать игру';
-        $('#gameId').value = game.id;
-        $('#gameTitle').value = game.title;
-        $('#gameConsole').value = game.console;
-        $('#gameGenre').value = game.genre;
-        $('#gameDescription').value = game.description || '';
-        $('#gameImageUrl').value = game.image || '';
-    } else {
-        $('#gameModalTitle').textContent = 'Добавить игру';
-        $('#gameId').value = '';
-    }
-    $('#gameModal').classList.add('active');
+const form = $('#gameForm');
+form.reset();
+$('#imagePreview').innerHTML = '';
+currentImageBase64 = null;
+if (gameId) {
+const game = games.find(g => g.id === gameId);
+if (!game) return;
+$('#gameModalTitle').textContent = 'Редактировать игру';
+$('#gameId').value = game.id;
+$('#gameTitle').value = game.title;
+$('#gameConsole').value = game.console;
+$('#gameGenre').value = game.genre;
+$('#gameDescription').value = game.description || '';
+if (game.image && !game.image.startsWith('data:')) {
+$('#gameImageUrl').value = game.image;
 }
-
-$('#gameForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const id = $('#gameId').value;
-    const imageUrl = $('#gameImageUrl').value.trim();
-
-    const gameData = {
-        title: $('#gameTitle').value.trim(),
-        console: $('#gameConsole').value,
-        genre: $('#gameGenre').value.trim(),
-        description: $('#gameDescription').value.trim(),
-        image: imageUrl || 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
-        updatedAt: new Date().toISOString()
-    };
-
-    const btn = $('#submitGame');
-    const originalText = btn.textContent;
-    btn.disabled = true;
-    btn.innerHTML = '<span class="loading"></span> Сохранение...';
-
-    try {
-        if (id) {
-            await updateGameInFirebase(id, gameData);
-        } else {
-            await addGameToFirebase(gameData);
-        }
-        $('#gameModal').classList.remove('active');
-    } catch (error) {
-        console.error(error);
-    } finally {
-        btn.disabled = false;
-        btn.textContent = originalText;
-    }
+if (game.image && game.image.startsWith('data:')) {
+currentImageBase64 = game.image;
+$('#imagePreview').innerHTML = `<img src="${game.image}" alt="preview">`;
+}
+} else {
+$('#gameModalTitle').textContent = 'Добавить игру';
+$('#gameId').value = '';
+}
+$('#gameModal').classList.add('active');
+}
+$('#gameImage').addEventListener('change', (e) => {
+const file = e.target.files[0];
+if (!file) return;
+if (file.size > 2 * 1024 * 1024) {
+toast('Картинка слишком большая (макс. 2 МБ)', 'error');
+e.target.value = '';
+return;
+}
+const reader = new FileReader();
+reader.onload = (ev) => {
+currentImageBase64 = ev.target.result;
+$('#imagePreview').innerHTML = `<img src="${currentImageBase64}" alt="preview">`;
+};
+reader.readAsDataURL(file);
 });
-
-// Авторизация
-const ADMIN_CREDENTIALS = { login: 'admin', password: 'admin123' };
-
+$('#gameForm').addEventListener('submit', (e) => {
+e.preventDefault();
+const id = $('#gameId').value;
+let imageUrl = $('#gameImageUrl').value.trim();
+const gameData = {
+title: $('#gameTitle').value.trim(),
+console: $('#gameConsole').value,
+genre: $('#gameGenre').value.trim(),
+description: $('#gameDescription').value.trim(),
+image: currentImageBase64 || imageUrl || `https://picsum.photos/seed/${uid()}/400/300`
+};
+if (id) {
+const idx = games.findIndex(g => g.id === id);
+if (idx !== -1) {
+games[idx] = { ...games[idx], ...gameData };
+toast('Игра обновлена', 'success');
+}
+} else {
+games.push({ id: uid(), ...gameData });
+toast('Игра добавлена!', 'success');
+}
+saveGames();
+renderAdminGames();
+renderClientGames();
+renderStats();
+$('#gameModal').classList.remove('active');
+});
+function deleteGame(id) {
+const game = games.find(g => g.id === id);
+if (!game) return;
+if (!confirm(`Удалить игру "${game.title}"? Брони останутся в истории.`)) return;
+games = games.filter(g => g.id !== id);
+saveGames();
+renderAdminGames();
+renderClientGames();
+renderStats();
+toast('Игра удалена', 'warning');
+}
+function resetGames() {
+if (!confirm('⚠️ ВНИМАНИЕ! Это удалит ВСЕ ваши игры и заменит их на 60 стандартных. Продолжить?')) return;
+games = [...DEFAULT_GAMES];
+saveGames();
+renderAdminGames();
+renderClientGames();
+renderStats();
+toast('Игры сброшены к стандартным (60 игр)', 'success');
+}
 function checkAuth() {
-    return localStorage.getItem('gz_auth') === 'true';
+return localStorage.getItem(STORAGE.AUTH) === 'true';
 }
-
 function showAdminPanel(show) {
-    $('#loginScreen').style.display = show ? 'none' : 'flex';
-    $('#adminPanel').style.display = show ? 'block' : 'none';
-    if (show) {
-        renderAdminGames();
-        renderAdminBookings();
-        renderStats();
-    }
+$('#loginScreen').style.display = show ? 'none' : 'flex';
+$('#adminPanel').style.display = show ? 'block' : 'none';
+if (show) {
+renderAdminGames();
+renderAdminBookings();
+renderStats();
 }
-
+}
 $('#loginForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const login = $('#loginUser').value.trim();
-    const pass = $('#loginPass').value;
-
-    if (login === ADMIN_CREDENTIALS.login && pass === ADMIN_CREDENTIALS.password) {
-        localStorage.setItem('gz_auth', 'true');
-        showAdminPanel(true);
-        toast('Добро пожаловать, админ! 🎮', 'success');
-    } else {
-        toast('Неверный логин или пароль', 'error');
-    }
+e.preventDefault();
+const login = $('#loginUser').value.trim();
+const pass = $('#loginPass').value;
+if (login === ADMIN_CREDENTIALS.login && pass === ADMIN_CREDENTIALS.password) {
+localStorage.setItem(STORAGE.AUTH, 'true');
+showAdminPanel(true);
+toast('Добро пожаловать, админ! 🎮', 'success');
+} else {
+toast('Неверный логин или пароль', 'error');
+}
 });
-
 $('#adminToggleBtn').addEventListener('click', () => {
-    const adminView = $('#adminView');
-    const clientView = $('#clientView');
-
-    if (adminView.classList.contains('active')) {
-        adminView.classList.remove('active');
-        clientView.classList.add('active');
-        $('#adminToggleBtn').textContent = '⚙ Админ';
-    } else {
-        clientView.classList.remove('active');
-        adminView.classList.add('active');
-        $('#adminToggleBtn').textContent = '🎮 На сайт';
-        if (checkAuth()) showAdminPanel(true);
-        else showAdminPanel(false);
-    }
+const adminView = $('#adminView');
+const clientView = $('#clientView');
+if (adminView.classList.contains('active')) {
+adminView.classList.remove('active');
+clientView.classList.add('active');
+$('#adminToggleBtn').textContent = '⚙ Админ';
+} else {
+clientView.classList.remove('active');
+adminView.classList.add('active');
+$('#adminToggleBtn').textContent = '🎮 На сайт';
+if (checkAuth()) showAdminPanel(true);
+else showAdminPanel(false);
+}
 });
-
 $$('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        $$('.tab-btn').forEach(b => b.classList.remove('active'));
-        $$('.tab-content').forEach(c => c.classList.remove('active'));
-        btn.classList.add('active');
-        $(`#tab-${btn.dataset.tab}`).classList.add('active');
-
-        if (btn.dataset.tab === 'stats') renderStats();
-        if (btn.dataset.tab === 'bookings') renderAdminBookings();
-        if (btn.dataset.tab === 'games') renderAdminGames();
-    });
+btn.addEventListener('click', () => {
+$$('.tab-btn').forEach(b => b.classList.remove('active'));
+$$('.tab-content').forEach(c => c.classList.remove('active'));
+btn.classList.add('active');
+$(`#tab-${btn.dataset.tab}`).classList.add('active');
+if (btn.dataset.tab === 'stats') renderStats();
+if (btn.dataset.tab === 'bookings') renderAdminBookings();
+if (btn.dataset.tab === 'games') renderAdminGames();
 });
-
+});
 $$('.nav-btn[data-filter]').forEach(btn => {
-    btn.addEventListener('click', () => {
-        $$('.nav-btn[data-filter]').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = btn.dataset.filter;
-        renderClientGames();
-    });
+btn.addEventListener('click', () => {
+$$('.nav-btn[data-filter]').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+currentFilter = btn.dataset.filter;
+renderClientGames();
 });
-
+});
 $('#myBookingsBtn').addEventListener('click', () => {
-    renderMyBookings();
-    $('#bookingsModal').classList.add('active');
+renderMyBookings();
+$('#bookingsModal').classList.add('active');
 });
-
 $$('.close-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        $(`#${btn.dataset.close}`).classList.remove('active');
-    });
+btn.addEventListener('click', () => {
+const modalId = btn.dataset.close;
+$(`#${modalId}`).classList.remove('active');
 });
-
+});
 $$('.modal').forEach(modal => {
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.classList.remove('active');
-    });
+modal.addEventListener('click', (e) => {
+if (e.target === modal) modal.classList.remove('active');
 });
-
+});
 $('#addGameBtn').addEventListener('click', () => openGameModal());
-$('#resetGamesBtn').addEventListener('click', loadDefaultGames);
-
+$('#resetGamesBtn').addEventListener('click', resetGames);
 // Инициализация
-console.log('🔥 21GameZone с Firebase загружен!');
-console.log('📡 Project ID:', firebaseConfig.projectId);
-loadGames();
-loadBookings();
+getUserId();
+renderClientGames();
+$('#gamesCount').textContent = games.length;
+console.log(`%c🎮 21GameZone загружен! Игр: ${games.length}`, 'color:#a855f7;font-size:16px;font-weight:bold;');
 </script>
 </body>
 </html>

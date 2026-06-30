@@ -699,9 +699,13 @@ margin-left: 10px;
 <input type="hidden" id="selectedTime" required>
 </div>
 <div class="form-group">
-<label>Длительность</label>
-<input type="text" value="1 час" disabled style="opacity:0.7;cursor:not-allowed;">
-<small class="hint">Бронирование доступно только на 1 час</small>
+<label>Длительность (часы)</label>
+<select id="bookingDuration" required>
+<option value="1">1 час</option>
+<option value="2" selected>2 часа</option>
+<option value="3">3 часа</option>
+<option value="4">4 часа</option>
+</select>
 </div>
 <button type="submit" class="btn-primary">Забронировать 🎯</button>
 </form>
@@ -769,191 +773,71 @@ USER_ID: 'gz_user_id'
 const ADMIN_CREDENTIALS = { login: 'admin', password: 'admin123' };
 // Временные слоты
 const TIME_SLOTS = ['13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
-// 60 ИГР С КАРТИНКАМИ
+// 60 ИГР БЕЗ ССЫЛОК НА КАРТИНКИ (будет заглушка)
 const DEFAULT_GAMES = [
 // PS5 (20 игр)
-{ id: 'ps5_1', title: 'God of War Ragnarök', console: 'PS5', genre: 'Экшен, Приключения',
-description: 'Эпическое продолжение саги о Кратосе и Атрее.',
-image: 'https://picsum.photos/seed/gow/400/300' },
-{ id: 'ps5_2', title: 'Spider-Man 2', console: 'PS5', genre: 'Экшен, Открытый мир',
-description: 'Питер Паркер и Майлз Моралес против Венома.',
-image: 'https://picsum.photos/seed/spiderman/400/300' },
-{ id: 'ps5_3', title: 'Horizon Forbidden West', console: 'PS5', genre: 'RPG, Приключения',
-description: 'Элой исследует постапокалиптический мир.',
-image: 'https://picsum.photos/seed/horizon/400/300' },
-{ id: 'ps5_4', title: 'The Last of Us Part I', console: 'PS5', genre: 'Экшен, Выживание',
-description: 'Ремейк культовой истории о Джоэле и Элли.',
-image: 'https://picsum.photos/seed/tlou/400/300' },
-{ id: 'ps5_5', title: 'Gran Turismo 7', console: 'PS5', genre: 'Гонки, Симулятор',
-description: 'Реалистичный автосимулятор с сотнями машин.',
-image: 'https://picsum.photos/seed/gt7/400/300' },
-{ id: 'ps5_6', title: 'Ratchet & Clank: Rift Apart', console: 'PS5', genre: 'Платформер, Экшен',
-description: 'Межгалактическое приключение с переходами.',
-image: 'https://picsum.photos/seed/ratchet/400/300' },
-{ id: 'ps5_7', title: 'Demon\'s Souls', console: 'PS5', genre: 'RPG, Souls-like',
-description: 'Ремейк классики с невероятной графикой.',
-image: 'https://picsum.photos/seed/demons/400/300' },
-{ id: 'ps5_8', title: 'Returnal', console: 'PS5', genre: 'Шутер, Roguelike',
-description: 'Научно-фантастический шутер с циклом времени.',
-image: 'https://picsum.photos/seed/returnal/400/300' },
-{ id: 'ps5_9', title: 'Sackboy: A Big Adventure', console: 'PS5', genre: 'Платформер, Кооператив',
-description: 'Очаровательный 3D-платформер для семьи.',
-image: 'https://picsum.photos/seed/sackboy/400/300' },
-{ id: 'ps5_10', title: 'Deathloop', console: 'PS5', genre: 'Шутер, Стелс',
-description: 'Временная петля на острове с убийствами.',
-image: 'https://picsum.photos/seed/deathloop/400/300' },
-{ id: 'ps5_11', title: 'Kena: Bridge of Spirits', console: 'PS5', genre: 'Приключения, Экшен',
-description: 'Красивое приключение с существами Рот.',
-image: 'https://picsum.photos/seed/kena/400/300' },
-{ id: 'ps5_12', title: 'Resident Evil Village', console: 'PS5', genre: 'Хоррор, Выживание',
-description: 'Итан Уинтерс против вампиров и монстров.',
-image: 'https://picsum.photos/seed/re8/400/300' },
-{ id: 'ps5_13', title: 'Final Fantasy XVI', console: 'PS5', genre: 'RPG, Экшен',
-description: 'Эпическая фэнтези-сага с Эйконами.',
-image: 'https://picsum.photos/seed/ff16/400/300' },
-{ id: 'ps5_14', title: 'Street Fighter 6', console: 'PS5', genre: 'Файтинг',
-description: 'Новое поколение легендарного файтинга.',
-image: 'https://picsum.photos/seed/sf6/400/300' },
-{ id: 'ps5_15', title: 'Tekken 8', console: 'PS5', genre: 'Файтинг',
-description: 'Мощный файтинг с невероятной графикой.',
-image: 'https://picsum.photos/seed/tekken/400/300' },
-{ id: 'ps5_16', title: 'Baldur\'s Gate 3', console: 'PS5', genre: 'RPG, Стратегия',
-description: 'Глубокая ролевая игра по D&D.',
-image: 'https://picsum.photos/seed/bg3/400/300' },
-{ id: 'ps5_17', title: 'Cyberpunk 2077', console: 'PS5', genre: 'RPG, Экшен',
-description: 'Открытый мир Найт-Сити с киберимплантами.',
-image: 'https://picsum.photos/seed/cyberpunk/400/300' },
-{ id: 'ps5_18', title: 'Elden Ring', console: 'PS5', genre: 'RPG, Souls-like',
-description: 'Шедевр от FromSoftware с открытым миром.',
-image: 'https://picsum.photos/seed/elden/400/300' },
-{ id: 'ps5_19', title: 'Hogwarts Legacy', console: 'PS5', genre: 'RPG, Приключения',
-description: 'Волшебный мир Хогвартса в XIX веке.',
-image: 'https://picsum.photos/seed/hogwarts/400/300' },
-{ id: 'ps5_20', title: 'Marvel\'s Midnight Suns', console: 'PS5', genre: 'Стратегия, RPG',
-description: 'Тактические бои с супергероями Marvel.',
-image: 'https://picsum.photos/seed/midnight/400/300' },
+{ id: 'ps5_1', title: 'God of War Ragnarök', console: 'PS5', genre: 'Экшен, Приключения', description: 'Эпическое продолжение саги о Кратосе и Атрее.', image: '' },
+{ id: 'ps5_2', title: 'Spider-Man 2', console: 'PS5', genre: 'Экшен, Открытый мир', description: 'Питер Паркер и Майлз Моралес против Венома.', image: '' },
+{ id: 'ps5_3', title: 'Horizon Forbidden West', console: 'PS5', genre: 'RPG, Приключения', description: 'Элой исследует постапокалиптический мир.', image: '' },
+{ id: 'ps5_4', title: 'The Last of Us Part I', console: 'PS5', genre: 'Экшен, Выживание', description: 'Ремейк культовой истории о Джоэле и Элли.', image: '' },
+{ id: 'ps5_5', title: 'Gran Turismo 7', console: 'PS5', genre: 'Гонки, Симулятор', description: 'Реалистичный автосимулятор с сотнями машин.', image: '' },
+{ id: 'ps5_6', title: 'Ratchet & Clank: Rift Apart', console: 'PS5', genre: 'Платформер, Экшен', description: 'Межгалактическое приключение с переходами.', image: '' },
+{ id: 'ps5_7', title: 'Demon\'s Souls', console: 'PS5', genre: 'RPG, Souls-like', description: 'Ремейк классики с невероятной графикой.', image: '' },
+{ id: 'ps5_8', title: 'Returnal', console: 'PS5', genre: 'Шутер, Roguelike', description: 'Научно-фантастический шутер с циклом времени.', image: '' },
+{ id: 'ps5_9', title: 'Sackboy: A Big Adventure', console: 'PS5', genre: 'Платформер, Кооператив', description: 'Очаровательный 3D-платформер для семьи.', image: '' },
+{ id: 'ps5_10', title: 'Deathloop', console: 'PS5', genre: 'Шутер, Стелс', description: 'Временная петля на острове с убийствами.', image: '' },
+{ id: 'ps5_11', title: 'Kena: Bridge of Spirits', console: 'PS5', genre: 'Приключения, Экшен', description: 'Красивое приключение с существами Рот.', image: '' },
+{ id: 'ps5_12', title: 'Resident Evil Village', console: 'PS5', genre: 'Хоррор, Выживание', description: 'Итан Уинтерс против вампиров и монстров.', image: '' },
+{ id: 'ps5_13', title: 'Final Fantasy XVI', console: 'PS5', genre: 'RPG, Экшен', description: 'Эпическая фэнтези-сага с Эйконами.', image: '' },
+{ id: 'ps5_14', title: 'Street Fighter 6', console: 'PS5', genre: 'Файтинг', description: 'Новое поколение легендарного файтинга.', image: '' },
+{ id: 'ps5_15', title: 'Tekken 8', console: 'PS5', genre: 'Файтинг', description: 'Мощный файтинг с невероятной графикой.', image: '' },
+{ id: 'ps5_16', title: 'Baldur\'s Gate 3', console: 'PS5', genre: 'RPG, Стратегия', description: 'Глубокая ролевая игра по D&D.', image: '' },
+{ id: 'ps5_17', title: 'Cyberpunk 2077', console: 'PS5', genre: 'RPG, Экшен', description: 'Открытый мир Найт-Сити с киберимплантами.', image: '' },
+{ id: 'ps5_18', title: 'Elden Ring', console: 'PS5', genre: 'RPG, Souls-like', description: 'Шедевр от FromSoftware с открытым миром.', image: '' },
+{ id: 'ps5_19', title: 'Hogwarts Legacy', console: 'PS5', genre: 'RPG, Приключения', description: 'Волшебный мир Хогвартса в XIX веке.', image: '' },
+{ id: 'ps5_20', title: 'Marvel\'s Midnight Suns', console: 'PS5', genre: 'Стратегия, RPG', description: 'Тактические бои с супергероями Marvel.', image: '' },
 // XBOX (20 игр)
-{ id: 'xb_1', title: 'Halo Infinite', console: 'Xbox', genre: 'Шутер, Sci-Fi',
-description: 'Мастер Чиф возвращается на Зета-кольцо.',
-image: 'https://picsum.photos/seed/halo/400/300' },
-{ id: 'xb_2', title: 'Forza Horizon 5', console: 'Xbox', genre: 'Гонки, Открытый мир',
-description: 'Фестиваль скорости в Мексике.',
-image: 'https://picsum.photos/seed/forza/400/300' },
-{ id: 'xb_3', title: 'Starfield', console: 'Xbox', genre: 'RPG, Sci-Fi',
-description: 'Космическая RPG от Bethesda.',
-image: 'https://picsum.photos/seed/starfield/400/300' },
-{ id: 'xb_4', title: 'Microsoft Flight Simulator', console: 'Xbox', genre: 'Симулятор',
-description: 'Реалистичный симулятор полётов.',
-image: 'https://picsum.photos/seed/flight/400/300' },
-{ id: 'xb_5', title: 'Gears 5', console: 'Xbox', genre: 'Шутер, Экшен',
-description: 'Эпическая сага о войне с саранчой.',
-image: 'https://picsum.photos/seed/gears/400/300' },
-{ id: 'xb_6', title: 'Sea of Thieves', console: 'Xbox', genre: 'Приключения, Кооператив',
-description: 'Пиратское приключение с сражениями.',
-image: 'https://picsum.photos/seed/thieves/400/300' },
-{ id: 'xb_7', title: 'Forza Motorsport', console: 'Xbox', genre: 'Гонки, Симулятор',
-description: 'Реалистичные кольцевые гонки.',
-image: 'https://picsum.photos/seed/motorsport/400/300' },
-{ id: 'xb_8', title: 'Hi-Fi Rush', console: 'Xbox', genre: 'Экшен, Ритм-игра',
-description: 'Стильный экшен в такт музыке.',
-image: 'https://picsum.photos/seed/hifirush/400/300' },
-{ id: 'xb_9', title: 'Pentiment', console: 'Xbox', genre: 'Приключения, Детектив',
-description: 'Средневековый детектив с иллюстрациями.',
-image: 'https://picsum.photos/seed/pentiment/400/300' },
-{ id: 'xb_10', title: 'Grounded', console: 'Xbox', genre: 'Выживание, Кооператив',
-description: 'Выживание в гигантском дворе.',
-image: 'https://picsum.photos/seed/grounded/400/300' },
-{ id: 'xb_11', title: 'Psychonauts 2', console: 'Xbox', genre: 'Платформер, Приключения',
-description: 'Путешествие в человеческое сознание.',
-image: 'https://picsum.photos/seed/psych/400/300' },
-{ id: 'xb_12', title: 'Redfall', console: 'Xbox', genre: 'Шутер, Кооператив',
-description: 'Борьба с вампирами на острове.',
-image: 'https://picsum.photos/seed/redfall/400/300' },
-{ id: 'xb_13', title: 'Star Wars Jedi: Survivor', console: 'Xbox', genre: 'Экшен, Приключения',
-description: 'Кэл Кестис продолжает приключение.',
-image: 'https://picsum.photos/seed/jedi/400/300' },
-{ id: 'xb_14', title: 'Diablo IV', console: 'Xbox', genre: 'RPG, Hack and slash',
-description: 'Мрачное приключение в Санктуарии.',
-image: 'https://picsum.photos/seed/diablo/400/300' },
-{ id: 'xb_15', title: 'Assassin\'s Creed Mirage', console: 'Xbox', genre: 'Экшен, Стелс',
-description: 'Возвращение к истокам в Багдаде.',
-image: 'https://picsum.photos/seed/acmirage/400/300' },
-{ id: 'xb_16', title: 'Mortal Kombat 1', console: 'Xbox', genre: 'Файтинг',
-description: 'Перезапуск с жестокими фаталити.',
-image: 'https://picsum.photos/seed/mk1/400/300' },
-{ id: 'xb_17', title: 'EA Sports FC 24', console: 'Xbox', genre: 'Спорт, Футбол',
-description: 'Новое поколение футбольного симулятора.',
-image: 'https://picsum.photos/seed/fc24/400/300' },
-{ id: 'xb_18', title: 'Call of Duty: MW III', console: 'Xbox', genre: 'Шутер',
-description: 'Продолжение современной войны.',
-image: 'https://picsum.photos/seed/cod/400/300' },
-{ id: 'xb_19', title: 'Alan Wake 2', console: 'Xbox', genre: 'Хоррор, Триллер',
-description: 'Психологический хоррор с двумя героями.',
-image: 'https://picsum.photos/seed/alanwake/400/300' },
-{ id: 'xb_20', title: 'Lies of P', console: 'Xbox', genre: 'RPG, Souls-like',
-description: 'Мрачная сказка о Пиноккио.',
-image: 'https://picsum.photos/seed/liesofp/400/300' },
+{ id: 'xb_1', title: 'Halo Infinite', console: 'Xbox', genre: 'Шутер, Sci-Fi', description: 'Мастер Чиф возвращается на Зета-кольцо.', image: '' },
+{ id: 'xb_2', title: 'Forza Horizon 5', console: 'Xbox', genre: 'Гонки, Открытый мир', description: 'Фестиваль скорости в Мексике.', image: '' },
+{ id: 'xb_3', title: 'Starfield', console: 'Xbox', genre: 'RPG, Sci-Fi', description: 'Космическая RPG от Bethesda.', image: '' },
+{ id: 'xb_4', title: 'Microsoft Flight Simulator', console: 'Xbox', genre: 'Симулятор', description: 'Реалистичный симулятор полётов.', image: '' },
+{ id: 'xb_5', title: 'Gears 5', console: 'Xbox', genre: 'Шутер, Экшен', description: 'Эпическая сага о войне с саранчой.', image: '' },
+{ id: 'xb_6', title: 'Sea of Thieves', console: 'Xbox', genre: 'Приключения, Кооператив', description: 'Пиратское приключение с сражениями.', image: '' },
+{ id: 'xb_7', title: 'Forza Motorsport', console: 'Xbox', genre: 'Гонки, Симулятор', description: 'Реалистичные кольцевые гонки.', image: '' },
+{ id: 'xb_8', title: 'Hi-Fi Rush', console: 'Xbox', genre: 'Экшен, Ритм-игра', description: 'Стильный экшен в такт музыке.', image: '' },
+{ id: 'xb_9', title: 'Pentiment', console: 'Xbox', genre: 'Приключения, Детектив', description: 'Средневековый детектив с иллюстрациями.', image: '' },
+{ id: 'xb_10', title: 'Grounded', console: 'Xbox', genre: 'Выживание, Кооператив', description: 'Выживание в гигантском дворе.', image: '' },
+{ id: 'xb_11', title: 'Psychonauts 2', console: 'Xbox', genre: 'Платформер, Приключения', description: 'Путешествие в человеческое сознание.', image: '' },
+{ id: 'xb_12', title: 'Redfall', console: 'Xbox', genre: 'Шутер, Кооператив', description: 'Борьба с вампирами на острове.', image: '' },
+{ id: 'xb_13', title: 'Star Wars Jedi: Survivor', console: 'Xbox', genre: 'Экшен, Приключения', description: 'Кэл Кестис продолжает приключение.', image: '' },
+{ id: 'xb_14', title: 'Diablo IV', console: 'Xbox', genre: 'RPG, Hack and slash', description: 'Мрачное приключение в Санктуарии.', image: '' },
+{ id: 'xb_15', title: 'Assassin\'s Creed Mirage', console: 'Xbox', genre: 'Экшен, Стелс', description: 'Возвращение к истокам в Багдаде.', image: '' },
+{ id: 'xb_16', title: 'Mortal Kombat 1', console: 'Xbox', genre: 'Файтинг', description: 'Перезапуск с жестокими фаталити.', image: '' },
+{ id: 'xb_17', title: 'EA Sports FC 24', console: 'Xbox', genre: 'Спорт, Футбол', description: 'Новое поколение футбольного симулятора.', image: '' },
+{ id: 'xb_18', title: 'Call of Duty: MW III', console: 'Xbox', genre: 'Шутер', description: 'Продолжение современной войны.', image: '' },
+{ id: 'xb_19', title: 'Alan Wake 2', console: 'Xbox', genre: 'Хоррор, Триллер', description: 'Психологический хоррор с двумя героями.', image: '' },
+{ id: 'xb_20', title: 'Lies of P', console: 'Xbox', genre: 'RPG, Souls-like', description: 'Мрачная сказка о Пиноккио.', image: '' },
 // VR (20 игр)
-{ id: 'vr_1', title: 'Half-Life: Alyx', console: 'VR', genre: 'Шутер, VR',
-description: 'Полноценный VR-шедевр от Valve.',
-image: 'https://picsum.photos/seed/alyx/400/300' },
-{ id: 'vr_2', title: 'Beat Saber', console: 'VR', genre: 'Ритм-игра, VR',
-description: 'Руби кубы в такт музыке!',
-image: 'https://picsum.photos/seed/beatsaber/400/300' },
-{ id: 'vr_3', title: 'Superhot VR', console: 'VR', genre: 'Шутер, VR',
-description: 'Время движется только когда двигаешься ты.',
-image: 'https://picsum.photos/seed/superhot/400/300' },
-{ id: 'vr_4', title: 'Boneworks', console: 'VR', genre: 'Экшен, VR',
-description: 'Физический шутер с реалистичной физикой.',
-image: 'https://picsum.photos/seed/boneworks/400/300' },
-{ id: 'vr_5', title: 'The Walking Dead: Saints & Sinners', console: 'VR', genre: 'Хоррор, Выживание',
-description: 'Выживание в зомби-апокалипсисе.',
-image: 'https://picsum.photos/seed/walkingdead/400/300' },
-{ id: 'vr_6', title: 'Resident Evil 4 VR', console: 'VR', genre: 'Хоррор, VR',
-description: 'Классический хоррор в VR.',
-image: 'https://picsum.photos/seed/re4vr/400/300' },
-{ id: 'vr_7', title: 'Blade & Sorcery', console: 'VR', genre: 'Экшен, VR',
-description: 'Средневековые сражения с магией.',
-image: 'https://picsum.photos/seed/bladesorc/400/300' },
-{ id: 'vr_8', title: 'Pavlov VR', console: 'VR', genre: 'Шутер, Мультиплеер',
-description: 'Тактический шутер в духе CS.',
-image: 'https://picsum.photos/seed/pavlov/400/300' },
-{ id: 'vr_9', title: 'Onward', console: 'VR', genre: 'Шутер, Симулятор',
-description: 'Реалистичный военный шутер.',
-image: 'https://picsum.photos/seed/onward/400/300' },
-{ id: 'vr_10', title: 'Asgard\'s Wrath', console: 'VR', genre: 'RPG, VR',
-description: 'Приключение в мире скандинавских богов.',
-image: 'https://picsum.photos/seed/asgard/400/300' },
-{ id: 'vr_11', title: 'Lone Echo', console: 'VR', genre: 'Приключения, VR',
-description: 'Научно-фантастическое приключение.',
-image: 'https://picsum.photos/seed/loneecho/400/300' },
-{ id: 'vr_12', title: 'Star Wars: Squadrons', console: 'VR', genre: 'Космосимулятор, VR',
-description: 'Космические бои на истребителях.',
-image: 'https://picsum.photos/seed/squadrons/400/300' },
-{ id: 'vr_13', title: 'No Man\'s Sky VR', console: 'VR', genre: 'Приключения, Космос',
-description: 'Исследование бесконечной вселенной.',
-image: 'https://picsum.photos/seed/nomanssky/400/300' },
-{ id: 'vr_14', title: 'Skyrim VR', console: 'VR', genre: 'RPG, VR',
-description: 'Легендарная RPG в VR.',
-image: 'https://picsum.photos/seed/skyrim/400/300' },
-{ id: 'vr_15', title: 'Fallout 4 VR', console: 'VR', genre: 'RPG, Постапокалипсис',
-description: 'Выживание в постапокалипсисе.',
-image: 'https://picsum.photos/seed/fallout/400/300' },
-{ id: 'vr_16', title: 'Moss', console: 'VR', genre: 'Приключения, VR',
-description: 'Очаровательное приключение мышонка.',
-image: 'https://picsum.photos/seed/moss/400/300' },
-{ id: 'vr_17', title: 'I Expect You To Die', console: 'VR', genre: 'Головоломка, VR',
-description: 'Шпионские головоломки от первого лица.',
-image: 'https://picsum.photos/seed/expectyoutodie/400/300' },
-{ id: 'vr_18', title: 'Walkabout Mini Golf VR', console: 'VR', genre: 'Спорт, VR',
-description: 'Мини-гольф с друзьями.',
-image: 'https://picsum.photos/seed/minigolf/400/300' },
-{ id: 'vr_19', title: 'Synth Riders', console: 'VR', genre: 'Ритм-игра, VR',
-description: 'Танцуй под синтвейв в неоновых мирах.',
-image: 'https://picsum.photos/seed/synthriders/400/300' },
-{ id: 'vr_20', title: 'Pistol Whip', console: 'VR', genre: 'Ритм-шутер, VR',
-description: 'Стильный шутер под музыку.',
-image: 'https://picsum.photos/seed/pistolwhip/400/300' }
+{ id: 'vr_1', title: 'Half-Life: Alyx', console: 'VR', genre: 'Шутер, VR', description: 'Полноценный VR-шедевр от Valve.', image: '' },
+{ id: 'vr_2', title: 'Beat Saber', console: 'VR', genre: 'Ритм-игра, VR', description: 'Руби кубы в такт музыке!', image: '' },
+{ id: 'vr_3', title: 'Superhot VR', console: 'VR', genre: 'Шутер, VR', description: 'Время движется только когда двигаешься ты.', image: '' },
+{ id: 'vr_4', title: 'Boneworks', console: 'VR', genre: 'Экшен, VR', description: 'Физический шутер с реалистичной физикой.', image: '' },
+{ id: 'vr_5', title: 'The Walking Dead: Saints & Sinners', console: 'VR', genre: 'Хоррор, Выживание', description: 'Выживание в зомби-апокалипсисе.', image: '' },
+{ id: 'vr_6', title: 'Resident Evil 4 VR', console: 'VR', genre: 'Хоррор, VR', description: 'Классический хоррор в VR.', image: '' },
+{ id: 'vr_7', title: 'Blade & Sorcery', console: 'VR', genre: 'Экшен, VR', description: 'Средневековые сражения с магией.', image: '' },
+{ id: 'vr_8', title: 'Pavlov VR', console: 'VR', genre: 'Шутер, Мультиплеер', description: 'Тактический шутер в духе CS.', image: '' },
+{ id: 'vr_9', title: 'Onward', console: 'VR', genre: 'Шутер, Симулятор', description: 'Реалистичный военный шутер.', image: '' },
+{ id: 'vr_10', title: 'Asgard\'s Wrath', console: 'VR', genre: 'RPG, VR', description: 'Приключение в мире скандинавских богов.', image: '' },
+{ id: 'vr_11', title: 'Lone Echo', console: 'VR', genre: 'Приключения, VR', description: 'Научно-фантастическое приключение.', image: '' },
+{ id: 'vr_12', title: 'Star Wars: Squadrons', console: 'VR', genre: 'Космосимулятор, VR', description: 'Космические бои на истребителях.', image: '' },
+{ id: 'vr_13', title: 'No Man\'s Sky VR', console: 'VR', genre: 'Приключения, Космос', description: 'Исследование бесконечной вселенной.', image: '' },
+{ id: 'vr_14', title: 'Skyrim VR', console: 'VR', genre: 'RPG, VR', description: 'Легендарная RPG в VR.', image: '' },
+{ id: 'vr_15', title: 'Fallout 4 VR', console: 'VR', genre: 'RPG, Постапокалипсис', description: 'Выживание в постапокалипсисе.', image: '' },
+{ id: 'vr_16', title: 'Moss', console: 'VR', genre: 'Приключения, VR', description: 'Очаровательное приключение мышонка.', image: '' },
+{ id: 'vr_17', title: 'I Expect You To Die', console: 'VR', genre: 'Головоломка, VR', description: 'Шпионские головоломки от первого лица.', image: '' },
+{ id: 'vr_18', title: 'Walkabout Mini Golf VR', console: 'VR', genre: 'Спорт, VR', description: 'Мини-гольф с друзьями.', image: '' },
+{ id: 'vr_19', title: 'Synth Riders', console: 'VR', genre: 'Ритм-игра, VR', description: 'Танцуй под синтвейв в неоновых мирах.', image: '' },
+{ id: 'vr_20', title: 'Pistol Whip', console: 'VR', genre: 'Ритм-шутер, VR', description: 'Стильный шутер под музыку.', image: '' }
 ];
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
@@ -1009,6 +893,7 @@ function saveBookings() { saveData(STORAGE.BOOKINGS, bookings); }
 function renderGameCard(game, isAdmin = false) {
 const card = document.createElement('div');
 card.className = 'game-card';
+// Если картинки нет, показываем заглушку
 const imageHtml = game.image
 ? `<img src="${game.image}" alt="${game.title}" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\\'font-size:80px;\\'>🎮</span>'">`
 : `<span style="font-size:80px;">🎮</span>`;
@@ -1092,10 +977,10 @@ $('#bookingDate').min = today;
 $('#bookingDate').value = today;
 $('#selectedTime').value = '';
 // Сброс временных слотов
-renderTimeSlots(today);
+renderTimeSlots(today, game.console);
 $('#bookingModal').classList.add('active');
 }
-function renderTimeSlots(date) {
+function renderTimeSlots(date, consoleType) {
 const slotsContainer = $('#timeSlots');
 slotsContainer.innerHTML = '';
 TIME_SLOTS.forEach(time => {
@@ -1103,10 +988,11 @@ const slot = document.createElement('div');
 slot.className = 'time-slot';
 slot.textContent = time;
 slot.dataset.time = time;
-// Проверяем, занята ли эта дата и время
+// Проверяем, занята ли эта дата и время ТОЛЬКО ДЛЯ ЭТОЙ КОНСОЛИ
 const isBooked = bookings.some(b =>
 b.date === date &&
 b.time === time &&
+b.console === consoleType && // Добавлена проверка консоли
 b.status === 'active'
 );
 if (isBooked) {
@@ -1125,9 +1011,12 @@ $('#selectedTime').value = time;
 }
 $('#bookingDate').addEventListener('change', (e) => {
 if (e.target.value) {
-renderTimeSlots(e.target.value);
-selectedTimeSlot = null;
-$('#selectedTime').value = '';
+const game = games.find(g => g.id === currentBookingGameId);
+if(game) {
+    renderTimeSlots(e.target.value, game.console);
+    selectedTimeSlot = null;
+    $('#selectedTime').value = '';
+}
 }
 });
 $('#bookingForm').addEventListener('submit', (e) => {
@@ -1147,7 +1036,7 @@ userName: $('#userName').value.trim(),
 userPhone: $('#userPhone').value.trim(),
 date: $('#bookingDate').value,
 time: selectedTimeSlot,
-duration: 1,
+duration: parseInt($('#bookingDuration').value),
 userId: getUserId(),
 status: 'active',
 createdAt: new Date().toISOString()
@@ -1295,7 +1184,8 @@ title: $('#gameTitle').value.trim(),
 console: $('#gameConsole').value,
 genre: $('#gameGenre').value.trim(),
 description: $('#gameDescription').value.trim(),
-image: currentImageBase64 || imageUrl || `https://picsum.photos/seed/${uid()}/400/300`
+// Если ничего не введено, оставляем пустым (будет заглушка)
+image: currentImageBase64 || imageUrl || ''
 };
 if (id) {
 const idx = games.findIndex(g => g.id === id);

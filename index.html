@@ -302,7 +302,6 @@ border-color: var(--primary);
 box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
 }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-/* Временные слоты */
 .time-slots {
 display: grid;
 grid-template-columns: repeat(3, 1fr);
@@ -556,6 +555,16 @@ color: var(--text-dim);
 border-top: 1px solid var(--border);
 margin-top: 40px;
 }
+.db-status {
+display: inline-block;
+padding: 4px 12px;
+border-radius: 12px;
+font-size: 12px;
+font-weight: 700;
+margin-left: 10px;
+}
+.db-status.ok { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+.db-status.error { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
 .admin-game-actions {
 display: flex;
 gap: 8px;
@@ -572,6 +581,34 @@ font-size: 13px;
 margin-left: 10px;
 }
 .reset-btn:hover { background: #dc2626; }
+.backup-actions {
+display: flex;
+gap: 10px;
+flex-wrap: wrap;
+margin-bottom: 20px;
+}
+.backup-actions button {
+padding: 12px 24px;
+border: none;
+border-radius: 8px;
+font-weight: 700;
+cursor: pointer;
+color: white;
+transition: all 0.3s;
+}
+.btn-export { background: var(--success); }
+.btn-import { background: var(--secondary); }
+.btn-clear { background: var(--danger); }
+.backup-actions button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.backup-info {
+background: var(--bg-darker);
+border: 1px solid var(--border);
+border-radius: 12px;
+padding: 20px;
+margin-bottom: 20px;
+}
+.backup-info h3 { margin-bottom: 10px; color: var(--accent); }
+.backup-info p { color: var(--text-dim); font-size: 14px; margin-bottom: 5px; }
 @media (max-width: 768px) {
 .header { padding: 15px 20px; }
 .hero h2 { font-size: 32px; }
@@ -635,6 +672,7 @@ margin-left: 10px;
 <button class="tab-btn active" data-tab="games">🎮 Игры</button>
 <button class="tab-btn" data-tab="bookings">📋 Бронирования</button>
 <button class="tab-btn" data-tab="stats">📊 Статистика</button>
+<button class="tab-btn" data-tab="backup">💾 Бэкап</button>
 </div>
 <section class="tab-content active" id="tab-games">
 <div class="section-header">
@@ -673,6 +711,23 @@ margin-left: 10px;
 <h2 style="margin-bottom:20px;">📊 Статистика</h2>
 <div class="stats-grid" id="statsGrid"></div>
 </section>
+<section class="tab-content" id="tab-backup">
+<h2 style="margin-bottom:20px;">💾 Резервное копирование базы данных</h2>
+<div class="backup-info">
+<h3>📦 Текущее состояние БД</h3>
+<p>🎮 Игр в базе: <strong id="backupGamesCount">0</strong></p>
+<p>📋 Бронирований: <strong id="backupBookingsCount">0</strong></p>
+<p>💾 Размер хранилища: <strong id="backupSize">0</strong> КБ</p>
+<p>🟢 Статус: <span id="backupStatus" class="db-status ok">OK</span></p>
+</div>
+<div class="backup-actions">
+<button class="btn-export" id="exportBtn">📤 Скачать бэкап (JSON)</button>
+<button class="btn-import" id="importBtn">📥 Загрузить из файла</button>
+<button class="btn-clear" id="clearAllBtn">🗑 Очистить всю БД</button>
+</div>
+<input type="file" id="importFile" accept=".json" style="display:none;">
+<p class="hint">⚠️ Сохраняйте бэкап регулярно — данные хранятся только в вашем браузере и могут быть потеряны при очистке кэша.</p>
+</section>
 </div>
 </div>
 <div class="modal" id="bookingModal">
@@ -695,20 +750,7 @@ margin-left: 10px;
 </div>
 <div class="form-group">
 <label>Выберите время начала</label>
-<div class="time-slots" id="timeSlots">
-<div class="time-slot" data-time="10:00">10:00</div>
-<div class="time-slot" data-time="11:00">11:00</div>
-<div class="time-slot" data-time="12:00">12:00</div>
-<div class="time-slot" data-time="13:00">13:00</div>
-<div class="time-slot" data-time="14:00">14:00</div>
-<div class="time-slot" data-time="15:00">15:00</div>
-<div class="time-slot" data-time="16:00">16:00</div>
-<div class="time-slot" data-time="17:00">17:00</div>
-<div class="time-slot" data-time="18:00">18:00</div>
-<div class="time-slot" data-time="19:00">19:00</div>
-<div class="time-slot" data-time="20:00">20:00</div>
-<div class="time-slot" data-time="21:00">21:00</div>
-</div>
+<div class="time-slots" id="timeSlots"></div>
 <input type="hidden" id="selectedTime" required>
 </div>
 <div class="form-group">
@@ -769,21 +811,20 @@ margin-left: 10px;
 </div>
 <div class="toast-container" id="toastContainer"></div>
 <footer class="footer">
-<p>© 2026 21GameZone — Играй. Бронируй. Побеждай. 🏆</p>
+<p>© 2026 21GameZone — Играй. Бронируй. Побеждай. 🏆 <span id="dbStatusFooter" class="db-status ok">БД: OK</span></p>
 </footer>
 <script>
 const STORAGE = {
 GAMES: 'gz_games',
 BOOKINGS: 'gz_bookings',
 AUTH: 'gz_auth',
-USER_ID: 'gz_user_id'
+USER_ID: 'gz_user_id',
+INITIALIZED: 'gz_initialized' // Флаг первичной инициализации
 };
 const ADMIN_CREDENTIALS = { login: 'admin', password: 'admin123' };
-// Временные слоты: с 10:00 до 21:00 (каждый час)
 const TIME_SLOTS = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'];
-// Фиксированная длительность брони — 1 час
 const FIXED_DURATION = 1;
-// 60 ИГР БЕЗ ССЫЛОК НА КАРТИНКИ (будет заглушка)
+
 const DEFAULT_GAMES = [
 // PS5 (20 игр)
 { id: 'ps5_1', title: 'God of War Ragnarök', console: 'PS5', genre: 'Экшен, Приключения', description: 'Эпическое продолжение саги о Кратосе и Атрее.', image: '' },
@@ -849,18 +890,79 @@ const DEFAULT_GAMES = [
 { id: 'vr_19', title: 'Synth Riders', console: 'VR', genre: 'Ритм-игра, VR', description: 'Танцуй под синтвейв в неоновых мирах.', image: '' },
 { id: 'vr_20', title: 'Pistol Whip', console: 'VR', genre: 'Ритм-шутер, VR', description: 'Стильный шутер под музыку.', image: '' }
 ];
+
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
+
+// ============ УЛУЧШЕННАЯ РАБОТА С БД ============
+function isLocalStorageAvailable() {
+try {
+const test = '__test__';
+localStorage.setItem(test, test);
+localStorage.removeItem(test);
+return true;
+} catch (e) {
+return false;
+}
+}
+
 function loadData(key, fallback) {
 try {
 const data = localStorage.getItem(key);
-return data ? JSON.parse(data) : fallback;
-} catch { return fallback; }
+if (data === null) return fallback;
+return JSON.parse(data);
+} catch (e) {
+console.error(`❌ Ошибка чтения ${key}:`, e);
+updateDbStatus(false);
+return fallback;
 }
+}
+
 function saveData(key, data) {
-localStorage.setItem(key, JSON.stringify(data));
+try {
+const serialized = JSON.stringify(data);
+localStorage.setItem(key, serialized);
+updateDbStatus(true);
+return true;
+} catch (e) {
+console.error(`❌ Ошибка записи ${key}:`, e);
+if (e.name === 'QuotaExceededError' || e.code === 22) {
+toast('⚠️ Хранилище переполнено! Сделайте бэкап и очистите данные.', 'error');
+} else {
+toast('❌ Ошибка сохранения данных', 'error');
 }
+updateDbStatus(false);
+return false;
+}
+}
+
+function updateDbStatus(ok) {
+const footerStatus = $('#dbStatusFooter');
+if (footerStatus) {
+footerStatus.className = `db-status ${ok ? 'ok' : 'error'}`;
+footerStatus.textContent = ok ? 'БД: OK' : 'БД: ОШИБКА';
+}
+const backupStatus = $('#backupStatus');
+if (backupStatus) {
+backupStatus.className = `db-status ${ok ? 'ok' : 'error'}`;
+backupStatus.textContent = ok ? 'OK' : 'ОШИБКА';
+}
+}
+
+function getStorageSize() {
+let total = 0;
+try {
+for (let key in localStorage) {
+if (localStorage.hasOwnProperty(key)) {
+total += localStorage[key].length + key.length;
+}
+}
+} catch (e) {}
+return (total / 1024).toFixed(2);
+}
+
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
 function toast(message, type = 'success') {
 const container = $('#toastContainer');
 const el = document.createElement('div');
@@ -874,32 +976,59 @@ el.style.transition = 'all 0.3s';
 setTimeout(() => el.remove(), 300);
 }, 3000);
 }
+
 function getUserId() {
 let id = localStorage.getItem(STORAGE.USER_ID);
 if (!id) {
 id = uid();
-localStorage.setItem(STORAGE.USER_ID, id);
+saveData(STORAGE.USER_ID, id);
 }
 return id;
 }
-// Загрузка данных с проверкой количества игр
-let games = loadData(STORAGE.GAMES, []);
-let bookings = loadData(STORAGE.BOOKINGS, []);
-// Если игр меньше 60 или их нет вообще - загружаем дефолтные
-if (!games || games.length < 60) {
-games = [...DEFAULT_GAMES];
-saveGames();
-console.log('✅ Загружено 60 игр по умолчанию');
+
+// Проверка доступности localStorage
+if (!isLocalStorageAvailable()) {
+alert('⚠️ localStorage недоступен! Данные не будут сохраняться. Проверьте настройки браузера.');
 }
+
+// ============ ИНИЦИАЛИЗАЦИЯ БД ============
+let games = loadData(STORAGE.GAMES, null);
+let bookings = loadData(STORAGE.BOOKINGS, null);
+const isInitialized = localStorage.getItem(STORAGE.INITIALIZED) === 'true';
+
+// Загружаем дефолтные игры ТОЛЬКО при первом запуске
+if (!isInitialized || games === null) {
+games = [...DEFAULT_GAMES];
+saveData(STORAGE.GAMES, games);
+localStorage.setItem(STORAGE.INITIALIZED, 'true');
+console.log('✅ Первый запуск — загружено 60 игр по умолчанию');
+}
+if (bookings === null) {
+bookings = [];
+saveData(STORAGE.BOOKINGS, bookings);
+}
+
+console.log(`%c🎮 21GameZone загружен!`, 'color:#a855f7;font-size:16px;font-weight:bold;');
+console.log(`📦 Игр: ${games.length}, Броней: ${bookings.length}, Размер БД: ${getStorageSize()} КБ`);
+
 let currentFilter = 'all';
 let currentBookingGameId = null;
 let currentImageBase64 = null;
 let selectedTimeSlot = null;
+
 function saveGames() {
-saveData(STORAGE.GAMES, games);
+const ok = saveData(STORAGE.GAMES, games);
 $('#gamesCount').textContent = games.length;
+updateBackupInfo();
+return ok;
 }
-function saveBookings() { saveData(STORAGE.BOOKINGS, bookings); }
+
+function saveBookings() {
+const ok = saveData(STORAGE.BOOKINGS, bookings);
+updateBackupInfo();
+return ok;
+}
+
 function renderGameCard(game, isAdmin = false) {
 const card = document.createElement('div');
 card.className = 'game-card';
@@ -917,9 +1046,7 @@ ${imageHtml}
 <div class="game-genre">${game.genre}</div>
 <div class="game-description">${game.description || ''}</div>
 <div class="game-footer">
-${isAdmin
-? ''
-: `<button class="btn-book" data-id="${game.id}">Забронировать</button>`}
+${isAdmin ? '' : `<button class="btn-book" data-id="${game.id}">Забронировать</button>`}
 </div>
 </div>
 ${isAdmin ? `
@@ -930,12 +1057,11 @@ ${isAdmin ? `
 `;
 return card;
 }
+
 function renderClientGames() {
 const grid = $('#gamesGrid');
 grid.innerHTML = '';
-const filtered = currentFilter === 'all'
-? games
-: games.filter(g => g.console === currentFilter);
+const filtered = currentFilter === 'all' ? games : games.filter(g => g.console === currentFilter);
 if (filtered.length === 0) {
 grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:40px;">Нет игр в этой категории 😔</p>';
 return;
@@ -951,6 +1077,7 @@ openBookingModal(btn.dataset.id);
 });
 });
 }
+
 function renderAdminGames() {
 const grid = $('#adminGamesGrid');
 grid.innerHTML = '';
@@ -970,6 +1097,7 @@ grid.querySelectorAll('[data-delete]').forEach(btn => {
 btn.addEventListener('click', () => deleteGame(btn.dataset.delete));
 });
 }
+
 function openBookingModal(gameId) {
 const game = games.find(g => g.id === gameId);
 if (!game) return;
@@ -985,10 +1113,10 @@ const today = new Date().toISOString().split('T')[0];
 $('#bookingDate').min = today;
 $('#bookingDate').value = today;
 $('#selectedTime').value = '';
-// Сброс временных слотов
 renderTimeSlots(today, game.console);
 $('#bookingModal').classList.add('active');
 }
+
 function renderTimeSlots(date, consoleType) {
 const slotsContainer = $('#timeSlots');
 slotsContainer.innerHTML = '';
@@ -997,7 +1125,6 @@ const slot = document.createElement('div');
 slot.className = 'time-slot';
 slot.textContent = time;
 slot.dataset.time = time;
-// Проверяем, занята ли эта дата и время ТОЛЬКО ДЛЯ ЭТОЙ КОНСОЛИ
 const isBooked = bookings.some(b =>
 b.date === date &&
 b.time === time &&
@@ -1012,22 +1139,25 @@ slot.addEventListener('click', () => selectTimeSlot(slot, time));
 slotsContainer.appendChild(slot);
 });
 }
+
 function selectTimeSlot(element, time) {
 $$('.time-slot').forEach(s => s.classList.remove('selected'));
 element.classList.add('selected');
 selectedTimeSlot = time;
 $('#selectedTime').value = time;
 }
+
 $('#bookingDate').addEventListener('change', (e) => {
 if (e.target.value) {
 const game = games.find(g => g.id === currentBookingGameId);
-if(game) {
-    renderTimeSlots(e.target.value, game.console);
-    selectedTimeSlot = null;
-    $('#selectedTime').value = '';
+if (game) {
+renderTimeSlots(e.target.value, game.console);
+selectedTimeSlot = null;
+$('#selectedTime').value = '';
 }
 }
 });
+
 $('#bookingForm').addEventListener('submit', (e) => {
 e.preventDefault();
 if (!selectedTimeSlot) {
@@ -1051,11 +1181,15 @@ status: 'active',
 createdAt: new Date().toISOString()
 };
 bookings.push(booking);
-saveBookings();
+if (saveBookings()) {
 $('#bookingModal').classList.remove('active');
 $('#bookingForm').reset();
 toast(`Бронь создана! ${game.title} — ${booking.date} в ${booking.time}`, 'success');
+} else {
+bookings.pop();
+}
 });
+
 function renderMyBookings() {
 const list = $('#myBookingsList');
 const userId = getUserId();
@@ -1084,6 +1218,7 @@ list.querySelectorAll('[data-cancel]').forEach(btn => {
 btn.addEventListener('click', () => cancelBooking(btn.dataset.cancel, true));
 });
 }
+
 function cancelBooking(id, isClient = false) {
 if (!confirm('Отменить бронирование?')) return;
 const b = bookings.find(x => x.id === id);
@@ -1094,10 +1229,12 @@ toast('Бронирование отменено', 'warning');
 renderMyBookings();
 if (!isClient) renderAdminBookings();
 }
+
 function formatDate(dateStr) {
 const d = new Date(dateStr);
 return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' });
 }
+
 function renderAdminBookings() {
 const tbody = $('#adminBookingsBody');
 const sorted = [...bookings].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -1125,6 +1262,7 @@ tbody.querySelectorAll('[data-admin-cancel]').forEach(btn => {
 btn.addEventListener('click', () => cancelBooking(btn.dataset.adminCancel, false));
 });
 }
+
 function renderStats() {
 const total = bookings.length;
 const active = bookings.filter(b => b.status === 'active').length;
@@ -1141,6 +1279,7 @@ $('#statsGrid').innerHTML = `
 <div class="stat-card"><div class="stat-icon">🥽</div><div class="stat-value">${byConsole.VR}</div><div class="stat-label">VR броней</div></div>
 `;
 }
+
 function openGameModal(gameId = null) {
 const form = $('#gameForm');
 form.reset();
@@ -1168,6 +1307,7 @@ $('#gameId').value = '';
 }
 $('#gameModal').classList.add('active');
 }
+
 $('#gameImage').addEventListener('change', (e) => {
 const file = e.target.files[0];
 if (!file) return;
@@ -1183,6 +1323,7 @@ $('#imagePreview').innerHTML = `<img src="${currentImageBase64}" alt="preview">`
 };
 reader.readAsDataURL(file);
 });
+
 $('#gameForm').addEventListener('submit', (e) => {
 e.preventDefault();
 const id = $('#gameId').value;
@@ -1210,6 +1351,7 @@ renderClientGames();
 renderStats();
 $('#gameModal').classList.remove('active');
 });
+
 function deleteGame(id) {
 const game = games.find(g => g.id === id);
 if (!game) return;
@@ -1221,6 +1363,7 @@ renderClientGames();
 renderStats();
 toast('Игра удалена', 'warning');
 }
+
 function resetGames() {
 if (!confirm('⚠️ ВНИМАНИЕ! Это удалит ВСЕ ваши игры и заменит их на 60 стандартных. Продолжить?')) return;
 games = [...DEFAULT_GAMES];
@@ -1230,9 +1373,99 @@ renderClientGames();
 renderStats();
 toast('Игры сброшены к стандартным (60 игр)', 'success');
 }
+
+// ============ БЭКАП / ВОССТАНОВЛЕНИЕ ============
+function updateBackupInfo() {
+const gc = $('#backupGamesCount');
+const bc = $('#backupBookingsCount');
+const sz = $('#backupSize');
+if (gc) gc.textContent = games.length;
+if (bc) bc.textContent = bookings.length;
+if (sz) sz.textContent = getStorageSize();
+}
+
+function exportData() {
+const data = {
+version: '1.0',
+exportDate: new Date().toISOString(),
+games: games,
+bookings: bookings
+};
+const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = `21gamezone_backup_${new Date().toISOString().split('T')[0]}.json`;
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+toast('✅ Бэкап сохранён в файл', 'success');
+}
+
+function importData(file) {
+const reader = new FileReader();
+reader.onload = (e) => {
+try {
+const data = JSON.parse(e.target.result);
+if (!data.games || !Array.isArray(data.games)) {
+toast('❌ Неверный формат файла', 'error');
+return;
+}
+if (!confirm(`Загрузить ${data.games.length} игр и ${(data.bookings || []).length} броней? Текущие данные будут заменены.`)) return;
+games = data.games;
+bookings = data.bookings || [];
+saveGames();
+saveBookings();
+renderAdminGames();
+renderClientGames();
+renderAdminBookings();
+renderStats();
+updateBackupInfo();
+toast('✅ Данные успешно загружены!', 'success');
+} catch (err) {
+toast('❌ Ошибка чтения файла: ' + err.message, 'error');
+}
+};
+reader.readAsText(file);
+}
+
+function clearAllData() {
+if (!confirm('⚠️ УДАЛИТЬ ВСЕ ДАННЫЕ? Игры, брони, настройки — всё будет стёрто!')) return;
+if (!confirm('Точно-точно? Это необратимо!')) return;
+try {
+localStorage.removeItem(STORAGE.GAMES);
+localStorage.removeItem(STORAGE.BOOKINGS);
+localStorage.removeItem(STORAGE.INITIALIZED);
+games = [...DEFAULT_GAMES];
+bookings = [];
+saveGames();
+saveBookings();
+localStorage.setItem(STORAGE.INITIALIZED, 'true');
+renderAdminGames();
+renderClientGames();
+renderAdminBookings();
+renderStats();
+updateBackupInfo();
+toast('🗑 Все данные очищены. Загружены стандартные игры.', 'warning');
+} catch (e) {
+toast('❌ Ошибка очистки: ' + e.message, 'error');
+}
+}
+
+$('#exportBtn').addEventListener('click', exportData);
+$('#importBtn').addEventListener('click', () => $('#importFile').click());
+$('#importFile').addEventListener('change', (e) => {
+const file = e.target.files[0];
+if (file) importData(file);
+e.target.value = '';
+});
+$('#clearAllBtn').addEventListener('click', clearAllData);
+
 function checkAuth() {
 return localStorage.getItem(STORAGE.AUTH) === 'true';
 }
+
 function showAdminPanel(show) {
 $('#loginScreen').style.display = show ? 'none' : 'flex';
 $('#adminPanel').style.display = show ? 'block' : 'none';
@@ -1240,8 +1473,10 @@ if (show) {
 renderAdminGames();
 renderAdminBookings();
 renderStats();
+updateBackupInfo();
 }
 }
+
 $('#loginForm').addEventListener('submit', (e) => {
 e.preventDefault();
 const login = $('#loginUser').value.trim();
@@ -1254,6 +1489,7 @@ toast('Добро пожаловать, админ! 🎮', 'success');
 toast('Неверный логин или пароль', 'error');
 }
 });
+
 $('#adminToggleBtn').addEventListener('click', () => {
 const adminView = $('#adminView');
 const clientView = $('#clientView');
@@ -1269,6 +1505,7 @@ if (checkAuth()) showAdminPanel(true);
 else showAdminPanel(false);
 }
 });
+
 $$('.tab-btn').forEach(btn => {
 btn.addEventListener('click', () => {
 $$('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1278,8 +1515,10 @@ $(`#tab-${btn.dataset.tab}`).classList.add('active');
 if (btn.dataset.tab === 'stats') renderStats();
 if (btn.dataset.tab === 'bookings') renderAdminBookings();
 if (btn.dataset.tab === 'games') renderAdminGames();
+if (btn.dataset.tab === 'backup') updateBackupInfo();
 });
 });
+
 $$('.nav-btn[data-filter]').forEach(btn => {
 btn.addEventListener('click', () => {
 $$('.nav-btn[data-filter]').forEach(b => b.classList.remove('active'));
@@ -1288,28 +1527,34 @@ currentFilter = btn.dataset.filter;
 renderClientGames();
 });
 });
+
 $('#myBookingsBtn').addEventListener('click', () => {
 renderMyBookings();
 $('#bookingsModal').classList.add('active');
 });
+
 $$('.close-btn').forEach(btn => {
 btn.addEventListener('click', () => {
 const modalId = btn.dataset.close;
 $(`#${modalId}`).classList.remove('active');
 });
 });
+
 $$('.modal').forEach(modal => {
 modal.addEventListener('click', (e) => {
 if (e.target === modal) modal.classList.remove('active');
 });
 });
+
 $('#addGameBtn').addEventListener('click', () => openGameModal());
 $('#resetGamesBtn').addEventListener('click', resetGames);
+
 // Инициализация
 getUserId();
 renderClientGames();
 $('#gamesCount').textContent = games.length;
-console.log(`%c🎮 21GameZone загружен! Игр: ${games.length}`, 'color:#a855f7;font-size:16px;font-weight:bold;');
+updateBackupInfo();
+updateDbStatus(true);
 </script>
 </body>
 </html>
